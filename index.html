@@ -28,285 +28,362 @@
         .hidden { display: none !important; }
     </style>
 </head>
-<body class="gradient-bg min-h-screen text-slate-800 font-sans flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+<body class="gradient-bg min-h-screen text-slate-800 font-sans flex flex-col selection:bg-brand-500 selection:text-white">
 
-    <!-- Header Navigation -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('quiz')">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-500 to-secondary-500 flex items-center justify-center text-white text-xl shadow-md">🛡️</div>
-                <div>
-                    <h1 class="font-bold text-lg md:text-xl leading-tight text-slate-900">SafeSchool</h1>
-                    <p class="text-xs text-slate-500 font-medium">Интерактивный тренинг</p>
-                </div>
+    <!-- ЭКРАН 1: ПРИВЕТСТВИЕ И ВЫБОР НАСТРОЕНИЯ -->
+    <div id="landingScreen" class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-10 card-shadow border border-slate-100 max-w-lg w-full text-center animate-fade-in relative overflow-hidden">
+            
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-500 to-secondary-500"></div>
+
+            <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-brand-500 to-secondary-500 flex items-center justify-center text-white text-4xl shadow-lg mb-6">
+                🛡️
+            </div>
+            
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Привет!</h1>
+            <p class="text-slate-500 mb-8">Это интерактивный тренинг по безопасности. Прежде чем начать, как ты себя чувствуешь прямо сейчас?</p>
+            
+            <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6" id="landing-mood-buttons">
+                <button onclick="selectLandingMood('calm')" class="mood-btn px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm hover:bg-emerald-50 hover:border-emerald-300 transition-all flex flex-col items-center gap-1 w-20">
+                    <span class="text-2xl">😌</span><span class="text-[10px] font-bold">Спокойно</span>
+                </button>
+                <button onclick="selectLandingMood('anxious')" class="mood-btn px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm hover:bg-amber-50 hover:border-amber-300 transition-all flex flex-col items-center gap-1 w-20">
+                    <span class="text-2xl">😰</span><span class="text-[10px] font-bold">Тревожно</span>
+                </button>
+                <button onclick="selectLandingMood('hurt')" class="mood-btn px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm hover:bg-rose-50 hover:border-rose-300 transition-all flex flex-col items-center gap-1 w-20">
+                    <span class="text-2xl">💔</span><span class="text-[10px] font-bold">Обижен</span>
+                </button>
+                <button onclick="selectLandingMood('confused')" class="mood-btn px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm hover:bg-purple-50 hover:border-purple-300 transition-all flex flex-col items-center gap-1 w-20">
+                    <span class="text-2xl">🤔</span><span class="text-[10px] font-bold">Растерян</span>
+                </button>
+                <button onclick="selectLandingMood('confident')" class="mood-btn px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm hover:bg-sky-50 hover:border-sky-300 transition-all flex flex-col items-center gap-1 w-20">
+                    <span class="text-2xl">😎</span><span class="text-[10px] font-bold">Уверен</span>
+                </button>
             </div>
 
-            <!-- Навигация: Викторина и Квесты идут первыми -->
-            <nav class="flex items-center space-x-1 md:space-x-1.5 bg-slate-100/80 p-1 rounded-2xl w-full sm:w-auto justify-start sm:justify-center overflow-x-auto">
-                <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="nav-btn active-tab px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🧠 Викторина</button>
-                <button onclick="switchTab('quest')" id="tab-btn-quest" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🎮 Квесты</button>
-                <button onclick="switchTab('sorter')" id="tab-btn-sorter" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">⚖️ Фильтр</button>
-                <button onclick="switchTab('builder')" id="tab-btn-builder" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">💬 Я-сообщения</button>
-                <button onclick="switchTab('letter')" id="tab-btn-letter" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">✉️ Письмо</button>
-                <button onclick="switchTab('admin')" id="tab-btn-admin" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🔐 Психологу</button>
-            </nav>
-        </div>
-    </header>
+            <div id="landing-mood-advice" class="hidden mb-6 p-4 bg-brand-50 rounded-2xl border border-brand-100 text-sm text-brand-900 leading-relaxed text-left animate-fade-in">
+                <!-- Текст совета -->
+            </div>
 
-    <main class="max-w-4xl mx-auto px-4 py-6 md:py-8 flex-grow w-full">
+            <button id="start-btn" onclick="startApp()" class="hidden w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-2xl text-lg shadow-lg transition-all transform hover:scale-105 animate-fade-in">
+                🚀 Начать тренинг
+            </button>
+            
+            <p class="text-[10px] text-slate-400 mt-6">Нажимая кнопку, ты соглашаешься с правилами тренинга</p>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: САМ САЙТ (С ВКЛАДКАМИ) -->
+    <div id="appScreen" class="hidden flex-col min-h-screen">
         
-        <!-- MOOD TRACKER -->
-        <div class="mb-8 bg-white/80 backdrop-blur-md rounded-3xl p-5 card-shadow border border-slate-100 text-center animate-fade-in">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Чек-ин настроения</h3>
-            <p class="text-sm font-bold text-slate-800 mb-3">Как ты себя чувствуешь прямо сейчас?</p>
-            <div class="flex flex-wrap justify-center gap-2 md:gap-3" id="mood-buttons">
-                <button onclick="selectMood('calm')" class="mood-btn px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs md:text-sm hover:bg-emerald-50 hover:border-emerald-300 transition-all">😌 Спокойно</button>
-                <button onclick="selectMood('anxious')" class="mood-btn px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs md:text-sm hover:bg-amber-50 hover:border-amber-300 transition-all">😰 Тревожно</button>
-                <button onclick="selectMood('hurt')" class="mood-btn px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs md:text-sm hover:bg-rose-50 hover:border-rose-300 transition-all">💔 Обижен(а)</button>
-                <button onclick="selectMood('confused')" class="mood-btn px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs md:text-sm hover:bg-purple-50 hover:border-purple-300 transition-all">🤔 Растерян(а)</button>
-                <button onclick="selectMood('confident')" class="mood-btn px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs md:text-sm hover:bg-sky-50 hover:border-sky-300 transition-all">😎 Уверен(а)</button>
+        <!-- Header Navigation -->
+        <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+            <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('quiz')">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-500 to-secondary-500 flex items-center justify-center text-white text-xl shadow-md">🛡️</div>
+                    <div>
+                        <h1 class="font-bold text-lg md:text-xl leading-tight text-slate-900">SafeSchool</h1>
+                        <p class="text-xs text-slate-500 font-medium">Интерактивный тренинг</p>
+                    </div>
+                </div>
+
+                <!-- Навигация -->
+                <nav class="flex items-center space-x-1 md:space-x-1.5 bg-slate-100/80 p-1 rounded-2xl w-full sm:w-auto justify-start sm:justify-center overflow-x-auto">
+                    <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="nav-btn active-tab px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🧠 Викторина</button>
+                    <button onclick="switchTab('quest')" id="tab-btn-quest" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🎮 Квесты</button>
+                    <button onclick="switchTab('sorter')" id="tab-btn-sorter" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">⚖️ Фильтр</button>
+                    <button onclick="switchTab('builder')" id="tab-btn-builder" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">💬 Я-сообщения</button>
+                    <button onclick="switchTab('letter')" id="tab-btn-letter" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">✉️ Письмо</button>
+                    <button onclick="switchTab('admin')" id="tab-btn-admin" class="nav-btn px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 whitespace-nowrap">🔐 Психологу</button>
+                </nav>
             </div>
-            <div id="mood-advice" class="hidden mt-4 p-3.5 bg-brand-50 rounded-2xl border border-brand-100 text-xs md:text-sm text-brand-900 leading-relaxed animate-fade-in"></div>
-        </div>
+        </header>
 
-        <div class="text-center mb-8 animate-fade-in">
-            <span class="inline-block px-3 py-1 bg-brand-100 text-brand-700 font-medium text-xs rounded-full mb-2">🤝 Безопасная школьная среда</span>
-            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Создай дружелюбный класс вокруг себя!</h2>
-        </div>
-
-        <!-- MODULE 1: QUIZ -->
-        <section id="module-quiz" class="animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
-                <div class="mb-6" id="quiz-header-container">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="quiz-progress-text">Вопрос 1 из 20</span>
-                        <span class="text-xs font-extrabold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full" id="quiz-score-text">Очки: 0</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                        <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-500 to-secondary-500 h-full w-0 transition-all duration-300"></div>
-                    </div>
-                </div>
-                <div id="quiz-card" class="space-y-6">
-                    <h3 id="quiz-question" class="text-lg md:text-xl font-bold text-slate-800 leading-snug"></h3>
-                    <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
-                    <div id="quiz-explanation" class="hidden p-4 rounded-2xl border text-sm leading-relaxed animate-fade-in"></div>
-                    <div class="flex justify-end pt-2">
-                        <button id="quiz-next-btn" onclick="nextQuestion()" class="hidden px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl shadow-md transition-all duration-200">Следующий вопрос <i class="fa-solid fa-arrow-right ml-2"></i></button>
-                    </div>
-                </div>
-                <div id="quiz-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
-                    <div class="inline-flex p-5 bg-yellow-100 rounded-full text-5xl text-yellow-500 shadow-inner">🏆</div>
-                    <div>
-                        <h3 class="text-2xl font-black text-slate-900">Викторина пройдена!</h3>
-                        <p class="text-slate-600 text-sm mt-1" id="quiz-final-score-text">Твой результат: 0 из 20</p>
-                    </div>
-                    <div class="flex justify-center space-x-3">
-                        <button onclick="restartQuiz()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-md transition-all text-sm"><i class="fa-solid fa-rotate-right mr-2"></i> Пройти заново</button>
-                    </div>
-                </div>
+        <main class="max-w-4xl mx-auto px-4 py-6 md:py-8 flex-grow w-full">
+            
+            <div class="text-center mb-8 animate-fade-in">
+                <span class="inline-block px-3 py-1 bg-brand-100 text-brand-700 font-medium text-xs rounded-full mb-2">🤝 Безопасная школьная среда</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Создай дружелюбный класс вокруг себя!</h2>
             </div>
-        </section>
 
-        <!-- MODULE 2: QUEST -->
-        <section id="module-quest" class="hidden animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
-                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
-                    <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl">🎮</div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">Ситуационные квесты</h3>
-                        <p class="text-xs text-slate-500">10 жизненных историй: выбери верную тактику</p>
+            <!-- MODULE 1: QUIZ -->
+            <section id="module-quiz" class="animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                    <div class="mb-6" id="quiz-header-container">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="quiz-progress-text">Вопрос 1 из 20</span>
+                            <span class="text-xs font-extrabold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full" id="quiz-score-text">Очки: 0</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-500 to-secondary-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
                     </div>
-                </div>
-                <div id="quest-card" class="space-y-6">
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1" id="quest-step-text">Сценарий 1 из 10</span>
-                        <h4 id="quest-title" class="font-bold text-slate-900 text-lg mb-2"></h4>
-                        <p id="quest-description" class="text-slate-700 text-sm md:text-base leading-relaxed"></p>
+                    <div id="quiz-card" class="space-y-6">
+                        <h3 id="quiz-question" class="text-lg md:text-xl font-bold text-slate-800 leading-snug"></h3>
+                        <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
+                        <div id="quiz-explanation" class="hidden p-4 rounded-2xl border text-sm leading-relaxed animate-fade-in"></div>
+                        <div class="flex justify-end pt-2">
+                            <button id="quiz-next-btn" onclick="nextQuestion()" class="hidden px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl shadow-md transition-all duration-200">Следующий вопрос <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                        </div>
                     </div>
-                    <div id="quest-choices" class="grid grid-cols-1 gap-3"></div>
-                    <div id="quest-feedback" class="hidden p-4 rounded-2xl border text-sm leading-relaxed animate-fade-in"></div>
-                    <div class="flex justify-end pt-2">
-                        <button id="quest-next-btn" onclick="nextQuestStep()" class="hidden px-6 py-3 bg-secondary-500 hover:bg-secondary-600 text-white font-bold rounded-2xl shadow-md transition-all">Продолжить <i class="fa-solid fa-arrow-right ml-2"></i></button>
-                    </div>
-                </div>
-                <div id="quest-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
-                    <div class="inline-flex p-5 bg-purple-100 rounded-full text-5xl text-purple-600 shadow-inner">🌟</div>
-                    <div>
-                        <h3 class="text-2xl font-black text-slate-900">Все квесты пройдены!</h3>
-                        <p class="text-slate-600 mt-2 text-sm md:text-base max-w-md mx-auto">Твои решения помогают делать школу местом, где каждый чувствует себя в безопасности.</p>
-                    </div>
-                    <button onclick="restartQuest()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-md transition-all text-sm"><i class="fa-solid fa-rotate-right mr-2"></i> Пройти квесты заново</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODULE 3: SORTER -->
-        <section id="module-sorter" class="hidden animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
-                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl">⚖️</div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">Фильтр: Буллинг или Дружба?</h3>
-                        <p class="text-xs text-slate-500">Определи, является ли действие травлей</p>
-                    </div>
-                </div>
-                <div id="sorter-card" class="space-y-6 text-center">
-                    <h4 id="sorter-text" class="text-lg font-bold text-slate-800 p-6 bg-slate-50 rounded-2xl border border-slate-200"></h4>
-                    <div class="flex justify-center space-x-4">
-                        <button onclick="sortAction('bully')" class="px-8 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl shadow-md text-sm">🚫 Это буллинг</button>
-                        <button onclick="sortAction('friend')" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl shadow-md text-sm">🤝 Это дружба</button>
-                    </div>
-                    <div id="sorter-feedback" class="hidden p-4 rounded-2xl border text-sm"></div>
-                </div>
-                <div id="sorter-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
-                    <div class="inline-flex p-5 bg-emerald-100 rounded-full text-5xl text-emerald-600 shadow-inner">🎯</div>
-                    <h3 class="text-2xl font-black text-slate-900">Отлично! Ты умеешь отличать травлю!</h3>
-                    <button onclick="restartSorter()" class="px-6 py-3 bg-slate-900 text-white font-bold rounded-2xl shadow-md text-sm">Пройти заново</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODULE 4: BUILDER -->
-        <section id="module-builder" class="hidden animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
-                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
-                    <div class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xl">💬</div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">Конструктор «Я-сообщений»</h3>
-                        <p class="text-xs text-slate-500">Учимся говорить о своих чувствах без обвинений</p>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">1. Я чувствую...</label>
-                        <select id="msg-feel" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
-                            <option value="обиду">Обиду</option>
-                            <option value="грусть">Грусть</option>
-                            <option value="злость">Злость</option>
-                            <option value="страх">Страх</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">2. Когда...</label>
-                        <select id="msg-when" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
-                            <option value="меня толкают на перемене">Меня толкают на перемене</option>
-                            <option value="надо мной смеются">Надо мной смеются</option>
-                            <option value="меня игнорируют в чате">Меня игнорируют в чате</option>
-                            <option value="у меня забирают вещи">У меня забирают вещи</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">3. Потому что...</label>
-                        <select id="msg-because" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
-                            <option value="мне это неприятно">Мне это неприятно</option>
-                            <option value="мне больно">Мне больно</option>
-                            <option value="я чувствую себя одиноко">Я чувствую себя одиноко</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">4. Я хочу...</label>
-                        <select id="msg-want" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
-                            <option value="чтобы это прекратилось">Чтобы это прекратилось</option>
-                            <option value="чтобы ты извинился">Чтобы ты извинился</option>
-                            <option value="чтобы мы поговорили спокойно">Чтобы мы поговорили спокойно</option>
-                        </select>
-                    </div>
-                    <button onclick="buildMessage()" class="w-full mt-4 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-md transition-all">Собрать сообщение</button>
-                </div>
-                <div id="builder-result" class="hidden mt-6 p-5 bg-sky-50 border border-sky-200 rounded-2xl text-slate-800 text-sm italic animate-fade-in"></div>
-            </div>
-        </section>
-
-        <!-- MODULE 5: LETTER (Письмо психологу) -->
-        <section id="module-letter" class="hidden animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
-                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
-                    <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xl">✉️</div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">Письмо психологу</h3>
-                        <p class="text-xs text-slate-500">Здесь ты можешь высказать свою идею, задать вопрос или поделиться переживаниями</p>
-                    </div>
-                </div>
-                
-                <form id="letter-form" onsubmit="submitLetter(event)" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
+                    <div id="quiz-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
+                        <div class="inline-flex p-5 bg-yellow-100 rounded-full text-5xl text-yellow-500 shadow-inner">🏆</div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваше имя</label>
-                            <input type="text" id="letter-name" placeholder="Имя" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500">
+                            <h3 class="text-2xl font-black text-slate-900">Викторина пройдена!</h3>
+                            <p class="text-slate-600 text-sm mt-1" id="quiz-final-score-text">Твой результат: 0 из 20</p>
+                        </div>
+                        <div class="flex justify-center space-x-3">
+                            <button onclick="restartQuiz()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-md transition-all text-sm"><i class="fa-solid fa-rotate-right mr-2"></i> Пройти заново</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 2: QUEST -->
+            <section id="module-quest" class="hidden animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl">🎮</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Ситуационные квесты</h3>
+                            <p class="text-xs text-slate-500">10 жизненных историй: выбери верную тактику</p>
+                        </div>
+                    </div>
+                    <div id="quest-card" class="space-y-6">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1" id="quest-step-text">Сценарий 1 из 10</span>
+                            <h4 id="quest-title" class="font-bold text-slate-900 text-lg mb-2"></h4>
+                            <p id="quest-description" class="text-slate-700 text-sm md:text-base leading-relaxed"></p>
+                        </div>
+                        <div id="quest-choices" class="grid grid-cols-1 gap-3"></div>
+                        <div id="quest-feedback" class="hidden p-4 rounded-2xl border text-sm leading-relaxed animate-fade-in"></div>
+                        <div class="flex justify-end pt-2">
+                            <button id="quest-next-btn" onclick="nextQuestStep()" class="hidden px-6 py-3 bg-secondary-500 hover:bg-secondary-600 text-white font-bold rounded-2xl shadow-md transition-all">Продолжить <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </div>
+                    <div id="quest-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
+                        <div class="inline-flex p-5 bg-purple-100 rounded-full text-5xl text-purple-600 shadow-inner">🌟</div>
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900">Все квесты пройдены!</h3>
+                            <p class="text-slate-600 mt-2 text-sm md:text-base max-w-md mx-auto">Твои решения помогают делать школу местом, где каждый чувствует себя в безопасности.</p>
+                        </div>
+                        <button onclick="restartQuest()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-md transition-all text-sm"><i class="fa-solid fa-rotate-right mr-2"></i> Пройти квесты заново</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 3: SORTER -->
+            <section id="module-sorter" class="hidden animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl">⚖️</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Фильтр: Буллинг или Дружба?</h3>
+                            <p class="text-xs text-slate-500">Определи, является ли действие травлей</p>
+                        </div>
+                    </div>
+                    <div id="sorter-card" class="space-y-6 text-center">
+                        <h4 id="sorter-text" class="text-lg font-bold text-slate-800 p-6 bg-slate-50 rounded-2xl border border-slate-200"></h4>
+                        <div class="flex justify-center space-x-4">
+                            <button onclick="sortAction('bully')" class="px-8 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl shadow-md text-sm">🚫 Это буллинг</button>
+                            <button onclick="sortAction('friend')" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl shadow-md text-sm">🤝 Это дружба</button>
+                        </div>
+                        <div id="sorter-feedback" class="hidden p-4 rounded-2xl border text-sm"></div>
+                    </div>
+                    <div id="sorter-result" class="hidden text-center py-6 space-y-6 animate-fade-in">
+                        <div class="inline-flex p-5 bg-emerald-100 rounded-full text-5xl text-emerald-600 shadow-inner">🎯</div>
+                        <h3 class="text-2xl font-black text-slate-900">Отлично! Ты умеешь отличать травлю!</h3>
+                        <button onclick="restartSorter()" class="px-6 py-3 bg-slate-900 text-white font-bold rounded-2xl shadow-md text-sm">Пройти заново</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 4: BUILDER -->
+            <section id="module-builder" class="hidden animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xl">💬</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Конструктор «Я-сообщений»</h3>
+                            <p class="text-xs text-slate-500">Учимся говорить о своих чувствах без обвинений</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">1. Я чувствую...</label>
+                            <select id="msg-feel" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
+                                <option value="обиду">Обиду</option>
+                                <option value="грусть">Грусть</option>
+                                <option value="злость">Злость</option>
+                                <option value="страх">Страх</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваш класс</label>
-                            <input type="text" id="letter-class" placeholder="8 Б" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">2. Когда...</label>
+                            <select id="msg-when" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
+                                <option value="меня толкают на перемене">Меня толкают на перемене</option>
+                                <option value="надо мной смеются">Надо мной смеются</option>
+                                <option value="меня игнорируют в чате">Меня игнорируют в чате</option>
+                                <option value="у меня забирают вещи">У меня забирают вещи</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">3. Потому что...</label>
+                            <select id="msg-because" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
+                                <option value="мне это неприятно">Мне это неприятно</option>
+                                <option value="мне больно">Мне больно</option>
+                                <option value="я чувствую себя одиноко">Я чувствую себя одиноко</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">4. Я хочу...</label>
+                            <select id="msg-want" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:border-brand-500">
+                                <option value="чтобы это прекратилось">Чтобы это прекратилось</option>
+                                <option value="чтобы ты извинился">Чтобы ты извинился</option>
+                                <option value="чтобы мы поговорили спокойно">Чтобы мы поговорили спокойно</option>
+                            </select>
+                        </div>
+                        <button onclick="buildMessage()" class="w-full mt-4 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-md transition-all">Собрать сообщение</button>
+                    </div>
+                    <div id="builder-result" class="hidden mt-6 p-5 bg-sky-50 border border-sky-200 rounded-2xl text-slate-800 text-sm italic animate-fade-in"></div>
+                </div>
+            </section>
+
+            <!-- MODULE 5: LETTER -->
+            <section id="module-letter" class="hidden animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xl">✉️</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Письмо психологу</h3>
+                            <p class="text-xs text-slate-500">Здесь ты можешь высказать свою идею, задать вопрос или поделиться переживаниями</p>
                         </div>
                     </div>
                     
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваше сообщение</label>
-                        <textarea id="letter-text" rows="5" required placeholder="Напишите здесь всё, что считаете важным..." class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500"></textarea>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-2">
-                        <label class="flex items-center space-x-2 text-xs text-slate-500 cursor-pointer">
-                            <input type="checkbox" id="letter-anon" class="rounded text-rose-500" onchange="toggleAnonLetterFields()">
-                            <span>Отправить анонимно</span>
-                        </label>
-                        <button type="submit" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-sm shadow-md transition">Отправить письмо</button>
-                    </div>
-                </form>
-
-                <div id="letter-success" class="hidden text-center py-8 space-y-3 animate-fade-in">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto">✓</div>
-                    <h4 class="text-lg font-bold text-slate-900">Письмо отправлено!</h4>
-                    <p class="text-xs text-slate-500">Психолог получит его и сможет ответить.</p>
-                    <button onclick="resetLetterForm()" class="text-xs text-brand-600 font-semibold underline mt-2">Написать еще письмо</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODULE 6: ADMIN (Кабинет Психолога) -->
-        <section id="module-admin" class="hidden animate-fade-in">
-            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100 space-y-6">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl">🔐</div>
+                    <form id="letter-form" onsubmit="submitLetter(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваше имя</label>
+                                <input type="text" id="letter-name" placeholder="Имя" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваш класс</label>
+                                <input type="text" id="letter-class" placeholder="8 Б" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500">
+                            </div>
+                        </div>
+                        
                         <div>
-                            <h3 class="font-bold text-lg text-slate-900">Кабинет Психолога</h3>
-                            <p class="text-xs text-slate-500">Письма и отзывы от учеников</p>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ваше сообщение</label>
+                            <textarea id="letter-text" rows="5" required placeholder="Напишите здесь всё, что считаете важным..." class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-rose-500"></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <label class="flex items-center space-x-2 text-xs text-slate-500 cursor-pointer">
+                                <input type="checkbox" id="letter-anon" class="rounded text-rose-500" onchange="toggleAnonLetterFields()">
+                                <span>Отправить анонимно</span>
+                            </label>
+                            <button type="submit" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-sm shadow-md transition">Отправить письмо</button>
+                        </div>
+                    </form>
+
+                    <div id="letter-success" class="hidden text-center py-8 space-y-3 animate-fade-in">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto">✓</div>
+                        <h4 class="text-lg font-bold text-slate-900">Письмо отправлено!</h4>
+                        <p class="text-xs text-slate-500">Психолог получит его и сможет ответить.</p>
+                        <button onclick="resetLetterForm()" class="text-xs text-brand-600 font-semibold underline mt-2">Написать еще письмо</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 6: ADMIN -->
+            <section id="module-admin" class="hidden animate-fade-in">
+                <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border border-slate-100 space-y-6">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl">🔐</div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900">Кабинет Психолога</h3>
+                                <p class="text-xs text-slate-500">Письма и отзывы от учеников</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-auth" class="max-w-sm mx-auto text-center py-6 space-y-4">
+                        <p class="text-xs text-slate-600">Введите пароль для доступа</p>
+                        <div class="flex space-x-2">
+                            <input type="password" id="admin-pass" placeholder="Пароль" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-slate-900">
+                            <button onclick="authAdmin()" class="px-5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl">Вход</button>
+                        </div>
+                        <p id="admin-auth-error" class="hidden text-xs text-rose-500 font-medium">Неверный пароль!</p>
+                    </div>
+                    
+                    <div id="admin-dashboard" class="hidden space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-900">Входящие письма</h4>
+                            <button onclick="loadLetters()" class="text-xs bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition">🔄 Обновить</button>
+                        </div>
+                        <div id="admin-list" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-end">
+                            <button onclick="logoutAdmin()" class="text-xs text-slate-500 hover:text-slate-800 font-semibold underline">Выйти</button>
                         </div>
                     </div>
                 </div>
-                
-                <div id="admin-auth" class="max-w-sm mx-auto text-center py-6 space-y-4">
-                    <p class="text-xs text-slate-600">Введите пароль для доступа</p>
-                    <div class="flex space-x-2">
-                        <input type="password" id="admin-pass" placeholder="Пароль" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-slate-900">
-                        <button onclick="authAdmin()" class="px-5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl">Вход</button>
-                    </div>
-                    <p id="admin-auth-error" class="hidden text-xs text-rose-500 font-medium">Неверный пароль!</p>
-                </div>
-                
-                <div id="admin-dashboard" class="hidden space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-slate-900">Входящие письма</h4>
-                        <button onclick="loadLetters()" class="text-xs bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition">🔄 Обновить</button>
-                    </div>
-                    <div id="admin-list" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
-                    <div class="pt-4 border-t border-slate-100 flex justify-end">
-                        <button onclick="logoutAdmin()" class="text-xs text-slate-500 hover:text-slate-800 font-semibold underline">Выйти</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-    </main>
+        </main>
+    </div>
 
     <script>
-        // КОНФИГУРАЦИЯ БАЗЫ ДАННЫХ (ОБЩАЯ С САЙТОМ ПСИХОЛОГА)
         const BIN_ID = "6af3158dffd5d16053b6a4ae"; 
         const MASTER_KEY = "$2a$10$5OG8yAXzsTfGHDGr/POtMOcu6YnKqlOE1CCYpXFlgRCCiVp7AwWOe";
         const API_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
         
-        let trainingLetters = []; 
+        let trainingLetters = [];
+        let selectedMood = '';
+
+        // --- ЛОГИКА ЭКРАНА ПРИВЕТСТВИЯ ---
+        const moodAdvice = {
+            calm: "Это здорово! Спокойствие помогает принимать верные решения.",
+            anxious: "Тревога — это нормально. Если она связана с травлей, напиши нам в разделе «✉️ Письмо».",
+            hurt: "Нам очень жаль. Помни: ты не один! Напиши психологу, он поможет.",
+            confused: "Растерянность бывает у всех. Попробуй пройти нашу викторину.",
+            confident: "Отлично! Твоя уверенность — лучшая защита. Помоги сегодня кому-то!"
+        };
+
+        function selectLandingMood(mood) {
+            selectedMood = mood;
+            
+            // Снимаем выделение со всех кнопок
+            document.querySelectorAll('#landing-mood-buttons button').forEach(b => {
+                b.classList.remove('bg-brand-100', 'border-brand-500', 'ring-2');
+                b.classList.add('bg-slate-50', 'border-slate-200');
+            });
+            
+            // Выделяем выбранную
+            const activeBtn = document.querySelector(`#landing-mood-buttons button[onclick="selectLandingMood('${mood}')"]`);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-slate-50', 'border-slate-200');
+                activeBtn.classList.add('bg-brand-100', 'border-brand-500', 'ring-2');
+            }
+
+            // Показываем совет
+            const adviceDiv = document.getElementById('landing-mood-advice');
+            adviceDiv.innerText = moodAdvice[mood];
+            adviceDiv.classList.remove('hidden');
+
+            // Показываем кнопку "Начать"
+            document.getElementById('start-btn').classList.remove('hidden');
+        }
+
+        function startApp() {
+            // Скрываем приветствие, показываем приложение
+            document.getElementById('landingScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('flex');
+            
+            // Включаем первую вкладку
+            switchTab('quiz');
+        }
 
         // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ---
         function switchTab(tabId) {
@@ -324,22 +401,6 @@
             if(tabId === 'admin' && !document.getElementById('admin-dashboard').classList.contains('hidden')) {
                 loadLetters();
             }
-        }
-
-        // --- ЛОГИКА ЧЕК-ИНА НАСТРОЕНИЯ ---
-        const moodAdvice = {
-            calm: "Это здорово! Спокойствие помогает принимать верные решения.",
-            anxious: "Тревога — это нормально. Если она связана с травлей, напиши нам в разделе «✉️ Письмо».",
-            hurt: "Нам очень жаль. Помни: ты не один! Напиши психологу, он поможет.",
-            confused: "Растерянность бывает у всех. Попробуй пройти нашу викторину.",
-            confident: "Отлично! Твоя уверенность — лучшая защита. Помоги сегодня кому-то!"
-        };
-
-        function selectMood(mood) {
-            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('bg-brand-100', 'border-brand-500', 'ring-2'));
-            const adviceDiv = document.getElementById('mood-advice');
-            adviceDiv.innerText = moodAdvice[mood];
-            adviceDiv.classList.remove('hidden');
         }
 
         // --- ЛОГИКА ВИКТОРИНЫ (20 ВОПРОСОВ, ОТВЕТЫ ПЕРЕМЕШАНЫ) ---
