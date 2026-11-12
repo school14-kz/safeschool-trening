@@ -6,7 +6,6 @@
 <title>Эко-квест: вода и свет</title>
 <style>
   * { box-sizing: border-box; }
-
   body {
     margin: 0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -15,250 +14,100 @@
     min-height: 100vh;
     padding: 24px 16px 40px;
   }
-
   .app { max-width: 860px; margin: 0 auto; }
-
   header { text-align: center; margin-bottom: 22px; }
-  header h1 {
-    margin: 0 0 8px;
-    font-size: clamp(23px, 4vw, 34px);
-    color: #0f5c46;
-  }
+  header h1 { margin: 0 0 8px; font-size: clamp(23px, 4vw, 34px); color: #0f5c46; }
   header p { margin: 0; color: #45685c; }
 
-  /* Табы */
-  .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; }
   .tab {
-    padding: 11px 16px;
-    border-radius: 12px;
-    border: 1px solid #cde8dc;
-    background: #fff;
-    color: #23574a;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: .15s;
+    padding: 11px 16px; border-radius: 12px; border: 1px solid #cde8dc;
+    background: #fff; color: #23574a; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: .15s;
   }
   .tab:hover { background: #f1fff9; }
-  .tab.active {
-    background: #0f8a61;
-    border-color: #0f8a61;
-    color: #fff;
-  }
+  .tab.active { background: #0f8a61; border-color: #0f8a61; color: #fff; }
 
   .panel { display: none; }
   .panel.active { display: block; animation: fade .2s ease; }
-
-  @keyframes fade {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: none; }
-  }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
   .card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 22px;
+    background: #fff; border-radius: 18px; padding: 22px;
     box-shadow: 0 10px 30px rgba(20, 80, 60, .09);
     border: 1px solid #d9f0e6;
   }
-
-  .card h2 {
-    margin: 0 0 6px;
-    color: #0f5c46;
-    font-size: 20px;
-  }
-
-  .quiz-progress {
-    font-size: 14px;
-    color: #5c7a70;
-    margin-bottom: 14px;
-  }
-
-  .question {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.35;
-    margin-bottom: 14px;
-  }
-
+  .card h2 { margin: 0 0 6px; color: #0f5c46; font-size: 20px; }
+  .quiz-progress { font-size: 14px; color: #5c7a70; margin-bottom: 14px; }
+  .question { font-size: 18px; font-weight: 700; line-height: 1.35; margin-bottom: 14px; }
   .answers { display: grid; gap: 10px; }
-
   .answers button {
-    width: 100%;
-    text-align: left;
-    padding: 12px 14px;
-    border: 1px solid #cde8dc;
-    border-radius: 12px;
-    background: #f7fffb;
-    color: #1b2b24;
-    font-size: 15px;
-    line-height: 1.35;
-    cursor: pointer;
-    transition: .15s;
+    width: 100%; text-align: left; padding: 12px 14px;
+    border: 1px solid #cde8dc; border-radius: 12px;
+    background: #f7fffb; color: #1b2b24; font-size: 15px; line-height: 1.35;
+    cursor: pointer; transition: .15s;
   }
-  .answers button:hover:not(:disabled) {
-    background: #e9fff4;
-    border-color: #7ccfaa;
-  }
+  .answers button:hover:not(:disabled) { background: #e9fff4; border-color: #7ccfaa; }
   .answers button:disabled { cursor: default; opacity: .95; }
-  .answers button.correct {
-    background: #d6ffe8;
-    border-color: #34b878;
-    font-weight: 700;
-  }
-  .answers button.wrong {
-    background: #ffe2e2;
-    border-color: #e05b5b;
-    font-weight: 700;
-  }
+  .answers button.correct { background: #d6ffe8; border-color: #34b878; font-weight: 700; }
+  .answers button.wrong { background: #ffe2e2; border-color: #e05b5b; font-weight: 700; }
 
   .feedback {
-    min-height: 40px;
-    margin-top: 12px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    line-height: 1.45;
-    display: none;
+    min-height: 40px; margin-top: 12px; padding: 10px 12px;
+    border-radius: 12px; font-size: 14px; line-height: 1.45; display: none;
   }
   .feedback.ok { display: block; background: #e5fff1; color: #0d6b42; }
   .feedback.bad { display: block; background: #fff0f0; color: #a12c2c; }
 
   .btn {
-    margin-top: 14px;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 12px;
-    background: #0f8a61;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: .15s;
+    margin-top: 14px; padding: 12px 18px; border: none; border-radius: 12px;
+    background: #0f8a61; color: #fff; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: .15s;
   }
   .btn:hover:not(:disabled) { background: #0b6f4e; }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
-
-  .btn.ghost {
-    background: #fff;
-    color: #0f5c46;
-    border: 1px solid #b9ddcf;
-  }
+  .btn.ghost { background: #fff; color: #0f5c46; border: 1px solid #b9ddcf; }
   .btn.ghost:hover { background: #f1fff9; }
 
-  /* Квест */
-  .quest-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
+  .quest-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .quest-step { font-size: 14px; color: #5c7a70; }
-
-  .quest-points {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0f5c46;
-    background: #e5fff1;
-    padding: 6px 12px;
-    border-radius: 99px;
-  }
-
-  .scene {
-    font-size: 15px;
-    color: #45685c;
-    margin-bottom: 6px;
-  }
-
-  .situation {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.35;
-    margin-bottom: 14px;
-  }
-
+  .quest-points { font-size: 14px; font-weight: 700; color: #0f5c46; background: #e5fff1; padding: 6px 12px; border-radius: 99px; }
+  .scene { font-size: 15px; color: #45685c; margin-bottom: 6px; }
+  .situation { font-size: 18px; font-weight: 700; line-height: 1.35; margin-bottom: 14px; }
   .choices { display: grid; gap: 10px; }
-
   .choice {
-    width: 100%;
-    text-align: left;
-    padding: 13px 14px;
-    border: 1px solid #cde8dc;
-    border-radius: 12px;
-    background: #f7fffb;
-    color: #1b2b24;
-    font-size: 15px;
-    line-height: 1.4;
-    cursor: pointer;
-    transition: .15s;
+    width: 100%; text-align: left; padding: 13px 14px;
+    border: 1px solid #cde8dc; border-radius: 12px;
+    background: #f7fffb; color: #1b2b24; font-size: 15px; line-height: 1.4;
+    cursor: pointer; transition: .15s;
   }
-  .choice:hover:not(:disabled) {
-    background: #e9fff4;
-    border-color: #7ccfaa;
-  }
+  .choice:hover:not(:disabled) { background: #e9fff4; border-color: #7ccfaa; }
   .choice:disabled { cursor: default; }
-  .choice.best {
-    background: #d6ffe8;
-    border-color: #34b878;
-    font-weight: 700;
-  }
-  .choice.okay {
-    background: #fff9dd;
-    border-color: #e0c14e;
-  }
-  .choice.bad {
-    background: #ffe2e2;
-    border-color: #e05b5b;
-  }
+  .choice.best { background: #d6ffe8; border-color: #34b878; font-weight: 700; }
+  .choice.okay { background: #fff9dd; border-color: #e0c14e; }
+  .choice.bad { background: #ffe2e2; border-color: #e05b5b; }
 
-  .bar {
-    height: 10px;
-    border-radius: 99px;
-    background: #e4f2ec;
-    overflow: hidden;
-    margin-top: 6px;
-  }
-  .bar > div {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #34b878, #0f8a61);
-    transition: width .35s;
-  }
+  .bar { height: 10px; border-radius: 99px; background: #e4f2ec; overflow: hidden; margin-top: 6px; }
+  .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, #34b878, #0f8a61); transition: width .35s; }
 
-  .result-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f5c46;
-    margin: 0 0 8px;
-  }
-
+  .result-title { font-size: 22px; font-weight: 800; color: #0f5c46; margin: 0 0 8px; }
   .result-text { color: #33584b; line-height: 1.55; margin: 0 0 4px; }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <h1>🌿 Эко-квест: вода и свет</h1>
-    <p>Две викторины и одна миссия — проверь, насколько ты экономный.</p>
+    <h1>🌿 Эко-переменка: вода и свет</h1>
+    <p>Весёлые вопросы с неожиданными фактами. Проверь себя и удиви друзей!</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="water">💧 Викторина: вода</button>
-    <button class="tab" data-tab="light">💡 Викторина: свет</button>
-    <button class="tab" data-tab="quest">🎮 Квест: эко-миссия</button>
+    <button class="tab active" data-tab="water">💧 Вода</button>
+    <button class="tab" data-tab="light">💡 Свет</button>
+    <button class="tab" data-tab="habits">🌍 Экопривычки</button>
+    <button class="tab" data-tab="quest">🎮 Квест</button>
   </div>
 
-  <!-- ВИКТОРИНА: ВОДА -->
   <section class="panel active" id="panel-water">
     <div class="card" id="quiz-water">
       <h2>💧 Викторина про воду</h2>
@@ -271,7 +120,6 @@
     </div>
   </section>
 
-  <!-- ВИКТОРИНА: СВЕТ -->
   <section class="panel" id="panel-light">
     <div class="card" id="quiz-light">
       <h2>💡 Викторина про свет и электричество</h2>
@@ -284,7 +132,18 @@
     </div>
   </section>
 
-  <!-- КВЕСТ -->
+  <section class="panel" id="panel-habits">
+    <div class="card" id="quiz-habits">
+      <h2>🌍 Викторина про экопривычки</h2>
+      <div class="quiz-progress"></div>
+      <div class="question"></div>
+      <div class="answers"></div>
+      <div class="feedback"></div>
+      <button class="btn next-btn" disabled>Следующий вопрос</button>
+      <button class="btn ghost restart-btn" hidden>Пройти заново</button>
+    </div>
+  </section>
+
   <section class="panel" id="panel-quest">
     <div class="card" id="quest">
       <h2>🎮 Миссия «Один эко-день»</h2>
@@ -304,7 +163,6 @@
 </div>
 
 <script>
-/* ============ ОБЩИЙ ДВИЖОК ВИКТОРИНЫ ============ */
 function createQuiz(rootId, questions) {
   const root = document.getElementById(rootId);
   const progressEl = root.querySelector('.quiz-progress');
@@ -314,14 +172,10 @@ function createQuiz(rootId, questions) {
   const nextBtn = root.querySelector('.next-btn');
   const restartBtn = root.querySelector('.restart-btn');
 
-  let current = 0;
-  let score = 0;
-  let answered = false;
+  let current = 0, score = 0, answered = false;
 
   function reset() {
-    current = 0;
-    score = 0;
-    answered = false;
+    current = 0; score = 0; answered = false;
     restartBtn.hidden = true;
     nextBtn.hidden = false;
     nextBtn.disabled = true;
@@ -334,10 +188,7 @@ function createQuiz(rootId, questions) {
     feedbackEl.className = 'feedback';
     feedbackEl.textContent = '';
 
-    if (current >= questions.length) {
-      showResult();
-      return;
-    }
+    if (current >= questions.length) { showResult(); return; }
 
     const item = questions[current];
     progressEl.textContent = `Вопрос ${current + 1} из ${questions.length}`;
@@ -361,7 +212,6 @@ function createQuiz(rootId, questions) {
 
     const item = questions[current];
     const buttons = answersEl.querySelectorAll('button');
-
     buttons.forEach((btn, i) => {
       btn.disabled = true;
       if (i === item.correct) btn.classList.add('correct');
@@ -369,14 +219,13 @@ function createQuiz(rootId, questions) {
 
     if (index === item.correct) {
       score++;
-      feedbackEl.textContent = 'Верно! ' + item.explain;
+      feedbackEl.textContent = '✅ Верно! ' + item.explain;
       feedbackEl.className = 'feedback ok';
     } else {
       clicked.classList.add('wrong');
-      feedbackEl.textContent = 'Не совсем. ' + item.explain;
+      feedbackEl.textContent = '❌ Не совсем. ' + item.explain;
       feedbackEl.className = 'feedback bad';
     }
-
     nextBtn.disabled = false;
   }
 
@@ -386,153 +235,283 @@ function createQuiz(rootId, questions) {
     questionEl.textContent = `Результат: ${score} из ${questions.length}`;
 
     if (score === questions.length) {
-      feedbackEl.textContent = 'Отлично! Ты настоящий эко-герой 🌱';
+      feedbackEl.textContent = '🏆 Идеально! Ты настоящий эко-эксперт!';
+    } else if (score >= Math.ceil(questions.length * 0.7)) {
+      feedbackEl.textContent = '🌿 Отлично! Ты знаешь очень много — расскажи друзьям.';
     } else if (score >= Math.ceil(questions.length / 2)) {
-      feedbackEl.textContent = 'Хорошо! Большая часть правил уже знакома.';
+      feedbackEl.textContent = '👍 Хорошо! Большая часть фактов у тебя в кармане.';
     } else {
-      feedbackEl.textContent = 'Есть куда расти — попробуй ещё раз и запомни подсказки.';
+      feedbackEl.textContent = '💧 Есть куда расти — попробуй ещё раз, теперь ты знаешь больше!';
     }
     feedbackEl.className = 'feedback ok';
-
     nextBtn.hidden = true;
     restartBtn.hidden = false;
   }
 
-  nextBtn.addEventListener('click', () => {
-    current++;
-    render();
-  });
-
+  nextBtn.addEventListener('click', () => { current++; render(); });
   restartBtn.addEventListener('click', reset);
-
   reset();
 }
 
-/* ============ ВОПРОСЫ ============ */
+/* =============== ВОДА — 13 вопросов =============== */
 createQuiz('quiz-water', [
   {
-    q: 'Как лучше экономить воду при чистке зубов?',
-    options: [
-      'Оставлять кран открытым',
-      'Закрывать кран, пока чистишь',
-      'Набирать полную раковину',
-      'Чистить зубы под сильной струёй'
-    ],
+    q: 'Сколько воды в организме взрослого человека?',
+    options: ['Около 10%', 'Около 30%', 'Около 60–70%', 'Около 95%'],
+    correct: 2,
+    explain: 'Мы буквально «сделаны из воды» — на 60–70%. Мозг ещё «воднее» — до 75%.'
+  },
+  {
+    q: 'Сколько литров воды нужно, чтобы вырастить 1 кг пшеницы?',
+    options: ['10 литров', '150 литров', '1500 литров', '15 000 литров'],
+    correct: 2,
+    explain: 'Около 1500 литров. А на 1 кг говядины уходит до 15 000 литров!'
+  },
+  {
+    q: 'Правда ли, что горячая вода может замёрзнуть быстрее холодной?',
+    options: ['Нет, это миф', 'Да, это называется эффект Мпембы', 'Только в космосе', 'Только зимой'],
     correct: 1,
-    explain: 'Закрытый кран экономит до 10–15 литров воды за пару минут.'
+    explain: 'Да! Это «эффект Мпембы» — загадка, над которой физики спорят до сих пор.'
+  },
+  {
+    q: 'Какая часть воды на Земле — пресная, пригодная для питья?',
+    options: ['Около 50%', 'Около 25%', 'Меньше 1%', 'Около 10%'],
+    correct: 2,
+    explain: 'Меньше 1%! Остальное — солёная вода океанов и ледники. Беречь её — важно!'
+  },
+  {
+    q: 'Как лучше экономить воду при чистке зубов?',
+    options: ['Оставлять кран открытым', 'Закрывать кран, пока чистишь', 'Набирать полную раковину', 'Чистить под сильной струёй'],
+    correct: 1,
+    explain: 'Закрытый кран экономит до 10–15 литров за пару минут. Это 5000 литров в год!'
   },
   {
     q: 'Что расходует меньше воды?',
-    options: [
-      'Полная ванна',
-      'Короткий душ 5 минут',
-      'Долгий душ 20 минут',
-      'Две полные ванны'
-    ],
+    options: ['Полная ванна', 'Короткий душ 5 минут', 'Долгий душ 20 минут', 'Две полные ванны'],
     correct: 1,
-    explain: 'Короткий душ обычно тратит в 2–3 раза меньше воды, чем ванна.'
+    explain: 'Короткий душ тратит в 2–3 раза меньше воды, чем ванна.'
   },
   {
-    q: 'Почему протекающий кран — это проблема?',
-    options: [
-      'Он делает воду вкуснее',
-      'Он очищает трубы',
-      'Он тратит воду впустую каждый день',
-      'Он экономит электричество'
-    ],
+    q: 'Сколько литров воды может «утечь» через капающий кран за сутки?',
+    options: ['Меньше 1 литра', 'Около 5 литров', 'До 20 литров', 'Около 100 литров'],
     correct: 2,
-    explain: 'Даже небольшая течь за сутки может «унести» десятки литров.'
+    explain: 'До 20 литров в сутки — это 600 литров в месяц! Починить кран дешевле.'
   },
   {
     q: 'Как разумнее мыть посуду руками?',
-    options: [
-      'Держать кран открытым всё время',
-      'Закрывать кран между ополаскиваниями',
-      'Мыть только горячей водой под напором',
-      'Мыть каждую тарелку отдельно'
-    ],
+    options: ['Держать кран открытым всё время', 'Закрывать кран между ополаскиваниями', 'Мыть только горячей водой', 'Мыть каждую тарелку отдельно'],
     correct: 1,
-    explain: 'Закрывая кран между этапами, ты сокращаешь расход воды в разы.'
+    explain: 'Закрывая кран между этапами, ты экономишь до 50 литров воды.'
   },
   {
     q: 'Когда лучше поливать растения, чтобы вода меньше испарялась?',
-    options: [
-      'В полдень под палящим солнцем',
-      'Утром или вечером',
-      'В обед, когда жарко',
-      'Во время дождя'
-    ],
+    options: ['В полдень под палящим солнцем', 'Утром или вечером', 'В обед, когда жарко', 'Во время дождя'],
     correct: 1,
     explain: 'Утром и вечером вода не испаряется так быстро и доходит до корней.'
+  },
+  {
+    q: 'Сколько воды в среднем расходует один человек в день в быту?',
+    options: ['10 литров', '50 литров', '150–200 литров', '1000 литров'],
+    correct: 2,
+    explain: 'Около 150–200 литров — это почти полная ванна на каждого жителя Земли!'
+  },
+  {
+    q: 'Что такое «виртуальная вода»?',
+    options: ['Вода из интернета', 'Вода, которую мы не видим, но тратим на производство вещей', 'Вода в фонтане', 'Кипячёная вода'],
+    correct: 1,
+    explain: 'Например, на одну футболку уходит до 2700 литров воды! Это «виртуальная» вода.'
+  },
+  {
+    q: 'Что делать, если из крана капает?',
+    options: ['Терпеть — это мелочь', 'Заменить прокладку или вызвать мастера', 'Открыть кран сильнее', 'Ничего, само пройдёт'],
+    correct: 1,
+    explain: 'Даже «мелкая» течь тратит до 20 литров в сутки. Починить — дешевле и экологичнее.'
+  },
+  {
+    q: 'Как правильно мыть овощи и фрукты, чтобы экономить воду?',
+    options: ['Под непрерывной струёй', 'В миске с водой, затем ополоснуть', 'Вообще не мыть', 'Под горячей водой долго'],
+    correct: 1,
+    explain: 'Мытьё в миске расходует в 3–4 раза меньше воды, чем проточная струя.'
   }
 ]);
 
+/* =============== СВЕТ — 14 вопросов =============== */
 createQuiz('quiz-light', [
   {
-    q: 'Какая лампа обычно экономичнее?',
+    q: 'Сколько времени идёт свет от Солнца до Земли?',
+    options: ['1 секунду', '8 минут', '1 час', '1 день'],
+    correct: 1,
+    explain: '8 минут и 20 секунд! Если Солнце погаснет — мы узнаем об этом только через 8 минут.'
+  },
+  {
+    q: 'Какая лампа экономичнее?',
     options: ['Лампа накаливания', 'LED-лампа', 'Галогенная лампа', 'Лампа с нитью накала'],
     correct: 1,
-    explain: 'LED-лампы потребляют меньше энергии и служат дольше.'
+    explain: 'LED-лампа служит в 10–25 раз дольше и тратит в 8 раз меньше энергии.'
+  },
+  {
+    q: 'Правда ли, что лампочку накаливания изобрёл один Эдисон?',
+    options: ['Да, только он', 'Нет, до Эдисона было более 20 изобретателей', 'Её изобрёл Ломоносов', 'Её изобрели в XXI веке'],
+    correct: 1,
+    explain: 'Эдисон сделал лампу удобной и массовой, но идея была не только его.'
   },
   {
     q: 'Ты выходишь из комнаты. Что сделать со светом?',
-    options: ['Оставить включённым', 'Выключить', 'Сделать ярче', 'Включить ещё одну лампу'],
+    options: ['Оставить включённым', 'Выключить', 'Сделать ярче', 'Включить ещё лампу'],
     correct: 1,
     explain: 'Выключенный свет в пустой комнате — самый простой способ экономии.'
   },
   {
     q: 'Что такое «режим ожидания» у техники?',
-    options: [
-      'Техника работает на полной мощности',
-      'Техника выключена полностью',
-      'Техника вроде выключена, но продолжает тратить энергию',
-      'Техника заряжается'
-    ],
+    options: ['Техника работает на полной мощности', 'Техника выключена полностью', 'Техника вроде выключена, но продолжает тратить энергию', 'Техника заряжается'],
     correct: 2,
-    explain: 'В режиме ожидания приборы продолжают потреблять электричество. Лучше вынимать вилку.'
+    explain: 'Телевизор в режиме ожидания «съедает» до 10 кВт·ч в год — это лишние деньги!'
   },
   {
     q: 'Как разумнее кипятить воду в чайнике?',
-    options: [
-      'Наливать до максимума',
-      'Кипятить столько, сколько нужно',
-      'Кипятить воду несколько раз',
-      'Не закрывать крышку'
-    ],
+    options: ['Наливать до максимума', 'Кипятить столько, сколько нужно', 'Кипятить несколько раз', 'Не закрывать крышку'],
     correct: 1,
-    explain: 'Чем меньше лишней воды — тем меньше электричества уходит на нагрев.'
+    explain: 'Лишняя вода = лишнее электричество. Наливай ровно на чашку.'
   },
   {
     q: 'Куда лучше не ставить холодильник?',
-    options: [
-      'В прохладный угол',
-      'Рядом с плитой или батареей',
-      'Подальше от окна',
-      'В тень'
-    ],
+    options: ['В прохладный угол', 'Рядом с плитой или батареей', 'Подальше от окна', 'В тень'],
     correct: 1,
     explain: 'Рядом с источником тепла холодильник тратит больше энергии на охлаждение.'
   },
   {
     q: 'Как днём можно меньше включать свет?',
-    options: [
-      'Задёрнуть шторы',
-      'Использовать дневной свет из окна',
-      'Включить все лампы',
-      'Закрыть окна'
-    ],
+    options: ['Задёрнуть шторы', 'Использовать дневной свет из окна', 'Включить все лампы', 'Закрыть окна'],
     correct: 1,
     explain: 'Дневной свет бесплатный — открытые шторы помогают экономить электричество.'
+  },
+  {
+    q: 'Что означает класс энергоэффективности «A+++»?',
+    options: ['Очень высокий расход энергии', 'Самый экономный класс', 'Техника без электричества', 'Только для ламп'],
+    correct: 1,
+    explain: 'Чем больше плюсов у класса A, тем меньше энергии потребляет техника.'
+  },
+  {
+    q: 'Как заряжать телефон экономнее?',
+    options: ['Оставлять на зарядке всю ночь', 'Отключать после полной зарядки', 'Заряжать при 5%', 'Держать зарядку в розетке всегда'],
+    correct: 1,
+    explain: 'После 100% телефон продолжает сосать энергию — лучше отключить.'
+  },
+  {
+    q: 'Почему пыль на лампе — это плохо?',
+    options: ['Лампа начинает мигать', 'Свет тусклее, а энергии уходит столько же', 'Лампа взрывается', 'Пыль экономит энергию'],
+    correct: 1,
+    explain: 'Пыль «съедает» до 20% света. Протирай лампы — будут светить ярче при той же мощности!'
+  },
+  {
+    q: 'Какого цвета обычно бывает молния?',
+    options: ['Только жёлтая', 'Только белая', 'Бывает разной: белой, голубой, розовой, фиолетовой', 'Только синяя'],
+    correct: 2,
+    explain: 'Цвет молнии зависит от газов в воздухе. Розовая — редкость и очень красива!'
+  },
+  {
+    q: 'Сколько энергии тратит обычная зарядка телефона, воткнутая в розетку без телефона?',
+    options: ['Нисколько', 'Немного, но за год набегает заметно', 'Очень много', 'Она взрывается'],
+    correct: 1,
+    explain: 'Зарядка без телефона всё равно «капает» энергией. Вынимай её из розетки!'
+  },
+  {
+    q: 'Что эффективнее для освещения одной комнаты?',
+    options: ['Одна яркая лампа', 'Несколько ламп средней яркости в разных углах', 'Свет из окна днём', 'Обе позиции 1 и 2 могут быть выгодны'],
+    correct: 3,
+    explain: 'Всё зависит от задачи. Иногда достаточно одной лампы, иногда — дневного света. Главное — не жечь всё сразу!'
   }
 ]);
 
-/* ============ КВЕСТ ============ */
+/* =============== ЭКОПРИВЫЧКИ — 13 вопросов =============== */
+createQuiz('quiz-habits', [
+  {
+    q: 'Сколько лет разлагается пластиковая бутылка в природе?',
+    options: ['1 год', '10 лет', 'Около 450 лет', 'Она разлагается за месяц'],
+    correct: 2,
+    explain: 'Пластиковая бутылка может пролежать 450 лет — в 5 раз дольше, чем ты живёшь!'
+  },
+  {
+    q: 'Что разлагается быстрее?',
+    options: ['Пластиковый пакет', 'Банановая кожура', 'Стеклянная бутылка', 'Алюминиевая банка'],
+    correct: 1,
+    explain: 'Банановая кожура — 2 месяца. Стекло — сотни лет. Алюминий — до 500 лет!'
+  },
+  {
+    q: 'Сколько раз можно переработать стекло?',
+    options: ['1 раз', '5 раз', 'Бесконечное количество раз', 'Стекло не перерабатывается'],
+    correct: 2,
+    explain: 'Стекло можно перерабатывать бесконечно без потери качества!'
+  },
+  {
+    q: 'Куда правильно сдавать использованные батарейки?',
+    options: ['В обычный мусор', 'В пункт приёма опасных отходов', 'В раковину', 'На клумбу'],
+    correct: 1,
+    explain: 'Одна батарейка загрязняет 20 м² земли! Сдавай в спецпункты.'
+  },
+  {
+    q: 'Что экологичнее для покупок?',
+    options: ['Новый пакет каждый раз', 'Многоразовая сумка', 'Двойной пластиковый пакет', 'Бумажный пакет каждую покупку'],
+    correct: 1,
+    explain: 'Многоразовая сумка заменяет сотни одноразовых пакетов за свою жизнь.'
+  },
+  {
+    q: 'Сколько воды экономит одна семья, если выключает воду при намыливании?',
+    options: ['Пару литров в год', 'Около 100 литров в год', 'До 100 литров в неделю', 'Ничего не экономит'],
+    correct: 2,
+    explain: 'До 100 литров в неделю — это почти 5000 литров в год!'
+  },
+  {
+    q: 'Что означает значок ♻️ на упаковке?',
+    options: ['Товар бракованный', 'Товар можно переработать', 'Товар очень дорогой', 'Товар нельзя купить'],
+    correct: 1,
+    explain: '♻️ — знак переработки. Упаковку можно сдать в специальный контейнер.'
+  },
+  {
+    q: 'Что делать с ненужной вещью?',
+    options: ['Выбросить', 'Отдать, продать или сдать на переработку', 'Спрятать в шкаф', 'Сжечь'],
+    correct: 1,
+    explain: 'Вещи можно передать другим — это продлевает им жизнь и уменьшает мусор.'
+  },
+  {
+    q: 'Какая привычка сберегает воду в душе?',
+    options: ['Намыливаться с открытым краном', 'Выключать воду, пока намыливаешься', 'Мыться 30 минут', 'Мыться дважды в день'],
+    correct: 1,
+    explain: 'Выключить воду при намыливании — расход сокращается в разы.'
+  },
+  {
+    q: 'Как экономить бумагу дома и в школе?',
+    options: ['Печатать всё подряд', 'Использовать обе стороны листа', 'Брать больше салфеток', 'Печатать в цвете всегда'],
+    correct: 1,
+    explain: 'Двусторонняя печать и использование черновиков сокращают расход бумаги.'
+  },
+  {
+    q: 'Правда ли, что из старой одежды можно сделать новую?',
+    options: ['Нет, это невозможно', 'Да, переработка тканей — обычное дело', 'Только из шерсти', 'Только в Японии'],
+    correct: 1,
+    explain: 'Из переработанных тканей делают новую одежду, утеплители и даже мебель!'
+  },
+  {
+    q: 'Сколько мусора в среднем производит один человек за год?',
+    options: ['Около 10 кг', 'Около 50 кг', 'Около 400 кг', 'Около 5 тонн'],
+    correct: 2,
+    explain: 'В среднем около 400 кг мусора в год — это как вес большой коровы!'
+  },
+  {
+    q: 'Что можно сделать из старых пластиковых бутылок?',
+    options: ['Ничего, только выбросить', 'Футболки, куртки, ковры, новые бутылки', 'Только игрушки', 'Только посуду'],
+    correct: 1,
+    explain: 'Из 25 бутылок можно сделать одну футболку! Переработка — это круто.'
+  }
+]);
+
+/* =============== КВЕСТ — 8 ситуаций =============== */
 const questSteps = [
   {
     scene: '🪥 Утро, ванная комната',
     situation: 'Ты чистишь зубы. Кран рядом. Что делаешь?',
     choices: [
-      { text: 'Закрываю кран, пока чищу', points: 10, type: 'best', feedback: '+10 очков. Отличный старт — экономия до 15 литров.' },
+      { text: 'Закрываю кран, пока чищу', points: 10, type: 'best', feedback: '+10 очков. Экономия до 15 литров — как 15 пакетов молока!' },
       { text: 'Набираю воду в стакан для полоскания', points: 7, type: 'okay', feedback: '+7 очков. Хорошо, но кран всё равно лучше закрыть.' },
       { text: 'Оставляю кран открытым — так быстрее', points: 0, type: 'bad', feedback: '0 очков. Вода льётся впустую всё время чистки.' }
     ]
@@ -542,7 +521,7 @@ const questSteps = [
     situation: 'Пора в душ. Какой вариант выбираешь?',
     choices: [
       { text: 'Короткий душ 5 минут', points: 10, type: 'best', feedback: '+10 очков. Быстро, бодро и экономно.' },
-      { text: 'Долгий душ 20 минут', points: 0, type: 'bad', feedback: '0 очков. Долгий душ тратит очень много воды.' },
+      { text: 'Долгий душ 20 минут', points: 0, type: 'bad', feedback: '0 очков. 20 минут душа — до 200 литров воды!' },
       { text: 'Полная ванна', points: 0, type: 'bad', feedback: '0 очков. Ванна — самый затратный вариант.' }
     ]
   },
@@ -581,6 +560,24 @@ const questSteps = [
       { text: 'Наливаю полный чайник на всякий случай', points: 0, type: 'bad', feedback: '0 очков. Лишняя вода = лишнее электричество.' },
       { text: 'Наливаю с запасом на две чашки', points: 4, type: 'okay', feedback: '+4 очка. Неплохо, но ровно на чашку экономнее.' }
     ]
+  },
+  {
+    scene: '🛒 Поход в магазин',
+    situation: 'Собираешься за продуктами. Что берёшь для покупок?',
+    choices: [
+      { text: 'Многоразовую сумку', points: 10, type: 'best', feedback: '+10 очков. Многоразовая сумка — лучший выбор для планеты.' },
+      { text: 'Пакет из бумаги', points: 5, type: 'okay', feedback: '+5 очков. Лучше пластика, но многоразовая сумка ещё экологичнее.' },
+      { text: 'Новый пластиковый пакет', points: 0, type: 'bad', feedback: '0 очков. Пластиковый пакет живёт в природе сотни лет.' }
+    ]
+  },
+  {
+    scene: '🌙 Поздний вечер',
+    situation: 'Ты уже в кровати, но в комнате горит свет и работает телевизор в другой комнате. Что делаешь?',
+    choices: [
+      { text: 'Встаю и всё выключаю', points: 10, type: 'best', feedback: '+10 очков. Лень побеждена — планета спасена!' },
+      { text: 'Оставляю свет — вставать не хочется', points: 0, type: 'bad', feedback: '0 очков. Свет и телевизор до утра тратят много энергии зря.' },
+      { text: 'Выключаю свет, но телевизор оставляю', points: 4, type: 'okay', feedback: '+4 очка. Половина дела сделана, но техника тоже просит «выкл».' }
+    ]
   }
 ];
 
@@ -596,17 +593,10 @@ function initQuest() {
   const restartBtn = root.querySelector('.quest-restart');
   const barFill = root.querySelector('.quest-bar-fill');
 
-  const maxPoints = questSteps.reduce(
-    (sum, step) => sum + Math.max(...step.choices.map(c => c.points)), 0
-  );
+  const maxPoints = questSteps.reduce((s, step) => s + Math.max(...step.choices.map(c => c.points)), 0);
+  let index = 0, points = 0, answered = false;
 
-  let index = 0;
-  let points = 0;
-  let answered = false;
-
-  function updateBar() {
-    barFill.style.width = (index / questSteps.length) * 100 + '%';
-  }
+  function updateBar() { barFill.style.width = (index / questSteps.length) * 100 + '%'; }
 
   function renderStep() {
     answered = false;
@@ -617,10 +607,7 @@ function initQuest() {
     choicesEl.innerHTML = '';
     updateBar();
 
-    if (index >= questSteps.length) {
-      showResult();
-      return;
-    }
+    if (index >= questSteps.length) { showResult(); return; }
 
     const step = questSteps[index];
     stepEl.textContent = `Ситуация ${index + 1} из ${questSteps.length}`;
@@ -641,16 +628,12 @@ function initQuest() {
   function pick(choice, clicked) {
     if (answered) return;
     answered = true;
-
     points += choice.points;
     pointsEl.textContent = `${points} эко-очков`;
-
-    choicesEl.querySelectorAll('.choice').forEach(btn => btn.disabled = true);
+    choicesEl.querySelectorAll('.choice').forEach(b => b.disabled = true);
     clicked.classList.add(choice.type);
-
     feedbackEl.textContent = choice.feedback;
     feedbackEl.className = 'feedback ' + (choice.points >= 8 ? 'ok' : 'bad');
-
     nextBtn.hidden = false;
     nextBtn.textContent = index === questSteps.length - 1 ? 'Показать итог' : 'Дальше';
   }
@@ -661,50 +644,31 @@ function initQuest() {
     stepEl.textContent = 'Миссия завершена';
     sceneEl.textContent = '';
     choicesEl.innerHTML = '';
-
     const percent = Math.round((points / maxPoints) * 100);
-
     let title, text;
-    if (percent >= 90) {
-      title = '🏆 Эко-герой!';
-      text = 'Ты экономишь воду и свет почти идеально. Так держать!';
-    } else if (percent >= 65) {
-      title = '🌿 Хороший эко-результат';
-      text = 'Много верных решений. Осталось подтянуть пару привычек.';
-    } else if (percent >= 40) {
-      title = '🙂 Неплохо, но есть рост';
-      text = 'Часть решений тратит ресурсы зря. Попробуй пройти миссию ещё раз.';
-    } else {
-      title = '💧 Стоит потренироваться';
-      text = 'Много воды и энергии уходит впустую. Пройди миссию заново — станет лучше.';
-    }
+    if (percent >= 90) { title = '🏆 Эко-герой!'; text = 'Ты экономишь воду и свет почти идеально. Так держать!'; }
+    else if (percent >= 65) { title = '🌿 Хороший эко-результат'; text = 'Много верных решений. Осталось подтянуть пару привычек.'; }
+    else if (percent >= 40) { title = '🙂 Неплохо, но есть рост'; text = 'Часть решений тратит ресурсы зря. Попробуй пройти миссию ещё раз.'; }
+    else { title = '💧 Стоит потренироваться'; text = 'Много воды и энергии уходит впустую. Пройди миссию заново.'; }
 
     situationEl.innerHTML =
       `<div class="result-title">${title}</div>` +
       `<p class="result-text">${points} из ${maxPoints} эко-очков (${percent}%)</p>` +
       `<p class="result-text">${text}</p>`;
-
     restartBtn.hidden = false;
   }
 
-  nextBtn.addEventListener('click', () => {
-    index++;
-    renderStep();
-  });
-
+  nextBtn.addEventListener('click', () => { index++; renderStep(); });
   restartBtn.addEventListener('click', () => {
-    index = 0;
-    points = 0;
+    index = 0; points = 0;
     situationEl.textContent = '';
     renderStep();
   });
-
   renderStep();
 }
 
 initQuest();
 
-/* ============ ТАБЫ ============ */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
