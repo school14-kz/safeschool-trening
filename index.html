@@ -2,487 +2,637 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<title>🌆 Мой город</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>🌿 Эко-битва</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; touch-action: none; overscroll-behavior: none; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #fff; user-select: none; -webkit-user-select: none; }
-  canvas { display: block; }
-
-  #hud {
-    position: fixed; top: env(safe-area-inset-top, 10px); left: 10px; right: 10px;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    padding-top: 6px; pointer-events: none; z-index: 10;
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #0b3d2e;
+    color: #fff;
+    min-height: 100vh;
+    overflow: hidden;
+    user-select: none;
   }
-  .stat {
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-    padding: 8px 14px; border-radius: 99px;
-    border: 1px solid rgba(255,255,255,0.15);
-    font-weight: 800; font-size: 15px;
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .stat-label { font-size: 9px; letter-spacing: 1px; color: #8fd4b8; text-transform: uppercase; font-weight: 700; }
-  .money { color: #7cffc4; font-size: 20px; line-height: 1; }
-  .income { color: #ffe86b; font-size: 13px; }
-  .income:empty { display: none; }
-  .time-badge { font-size: 13px; color: #ffe86b; }
-
-  #resetBtn {
-    position: fixed; top: calc(env(safe-area-inset-top, 10px) + 78px); right: 10px;
-    width: 38px; height: 38px; border-radius: 50%;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #8fd4b8; font-size: 18px; cursor: pointer;
-    z-index: 15; display: flex; align-items: center; justify-content: center;
-  }
-  #resetBtn:active { transform: scale(0.9); }
-
-  #joystick {
-    position: fixed; bottom: calc(env(safe-area-inset-bottom, 20px) + 20px); left: 20px;
-    width: 130px; height: 130px; border-radius: 50%;
-    background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.2);
-    z-index: 20; touch-action: none;
-  }
-  #stick {
-    position: absolute; top: 50%; left: 50%; width: 56px; height: 56px;
-    margin: -28px 0 0 -28px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #7cffc4, #34d399);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    transition: transform 0.05s;
-  }
-
-  #interactBtn {
-    position: fixed; bottom: calc(env(safe-area-inset-bottom, 20px) + 30px); right: 24px;
-    min-width: 90px; height: 90px; padding: 8px 18px;
-    border-radius: 50%;
-    border: 3px solid rgba(255,232,107,0.8);
-    background: linear-gradient(135deg, rgba(255,232,107,0.4), rgba(255,176,43,0.4));
-    backdrop-filter: blur(8px);
-    color: #fff; font-weight: 900; font-size: 13px;
-    display: none; align-items: center; justify-content: center; text-align: center;
-    z-index: 25; cursor: pointer; touch-action: none;
-    transition: transform 0.1s;
-    line-height: 1.15;
-    white-space: pre-line;
-  }
-  #interactBtn.show { display: flex; }
-  #interactBtn:active { transform: scale(0.92); }
-  #interactBtn.enter {
-    border-color: rgba(124,255,196,0.9);
-    background: linear-gradient(135deg, rgba(124,255,196,0.5), rgba(52,211,153,0.5));
-  }
-
-  #toast {
-    position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.85); padding: 10px 20px;
-    border-radius: 99px; font-size: 13px; font-weight: 800; color: #7cffc4;
-    pointer-events: none; opacity: 0; transition: opacity 0.2s, top 0.2s;
-    z-index: 50; white-space: nowrap; max-width: 90vw;
-  }
-  #toast.show { opacity: 1; top: 80px; }
-
-  #orientation-hint {
+  .bg {
     position: fixed; inset: 0;
-    background: rgba(10,10,26,0.95);
-    display: none;
+    background: linear-gradient(135deg, #0b3d2e, #145a43, #0b3d2e);
+    background-size: 300% 300%;
+    animation: bgShift 12s ease infinite;
+    z-index: -1;
+  }
+  @keyframes bgShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .app {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
     flex-direction: column;
+    padding: 10px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ВКЛАДКИ */
+  .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .tab {
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.08);
+    color: #b8e6d4;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tab.active {
+    background: rgba(124, 255, 196, 0.2);
+    border-color: #7cffc4;
+    color: #fff;
+  }
+  .tab:active { transform: scale(0.97); }
+
+  /* СЛОЖНОСТЬ */
+  .levels { display: flex; gap: 6px; margin-bottom: 8px; }
+  .level {
+    flex: 1;
+    padding: 8px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: #8fd4b8;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .level.active {
+    border-color: #7cffc4;
+    color: #fff;
+    background: rgba(124, 255, 196, 0.12);
+  }
+  .level.easy.active { border-color: #7cffc4; color: #7cffc4; }
+  .level.hard.active { border-color: #ffb02b; color: #ffb02b; background: rgba(255, 176, 43, 0.12); }
+
+  /* HUD */
+  .hud {
+    display: flex;
+    gap: 8px;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    z-index: 200;
-    padding: 30px;
+    justify-content: space-between;
+    padding: 4px 2px;
+  }
+  .hud-pill {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 7px 12px;
+    border-radius: 99px;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    backdrop-filter: blur(10px);
+  }
+  .hud-pill.streak.hot { animation: shake 0.3s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px) rotate(-3deg); }
+    75% { transform: translateX(4px) rotate(3deg); }
+  }
+
+  .timer-wrap {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 6px 0 10px;
+  }
+  .timer-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #7cffc4, #4ad4ff);
+    border-radius: 99px;
+    transition: width 0.1s linear;
+  }
+  .timer-bar.warn { background: linear-gradient(90deg, #ffb02b, #ff6b6b); }
+  .timer-bar.danger { background: #ff3b3b; animation: pulse 0.4s infinite alternate; }
+  @keyframes pulse { to { opacity: 0.6; } }
+
+  .q-emoji {
+    font-size: 40px;
     text-align: center;
+    margin: 0 0 4px;
+    animation: pop 0.3s ease;
   }
-  #orientation-hint.show { display: flex; }
-  #orientation-hint .ico {
-    font-size: 84px;
-    animation: rotate 2s ease-in-out infinite;
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
   }
-  @keyframes rotate {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(90deg); }
-  }
-  #orientation-hint p { color: #b8e6d4; font-size: 16px; font-weight: 700; max-width: 300px; line-height: 1.5; }
-  @media (orientation: landscape) {
-    #orientation-hint.show { display: none; }
+  .q-text {
+    font-size: clamp(16px, 4.2vw, 19px);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.3;
+    margin: 0 0 12px;
+    min-height: 2.4em;
   }
 
-  #overlay {
-    position: fixed; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 14px; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-    z-index: 100; padding: 24px; text-align: center;
+  .answers { display: grid; gap: 8px; flex: 1; align-content: start; }
+  .answer {
+    padding: 14px 16px;
+    border: none;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+    backdrop-filter: blur(6px);
+    line-height: 1.3;
   }
-  #overlay.hidden { display: none; }
-  #overlay h1 {
-    font-size: clamp(26px, 8vw, 40px); font-weight: 900;
-    background: linear-gradient(135deg, #7cffc4, #ffe86b);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    line-height: 1.1;
+  .answer:active:not(:disabled) { transform: scale(0.97); }
+  .answer:disabled { cursor: default; }
+  .answer.correct {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: #04281c;
+    animation: correctPop 0.4s;
   }
-  #overlay p { color: #b8e6d4; max-width: 380px; line-height: 1.6; font-size: 14px; }
-  .legend-mobile {
-    display: grid; grid-template-columns: auto auto; gap: 8px 16px;
-    font-size: 13px; color: #b8e6d4; text-align: left;
-    background: rgba(255,255,255,0.05); padding: 14px 18px;
-    border-radius: 14px; border: 1px solid rgba(124,255,196,0.2);
+  @keyframes correctPop { 50% { transform: scale(1.05); } }
+  .answer.wrong {
+    background: linear-gradient(135deg, #ff6b6b, #e83a3a);
+    animation: wrongShake 0.4s;
   }
-  .legend-mobile b { color: #fff; }
-  #overlay .cta {
-    padding: 16px 44px; border: none; border-radius: 18px;
-    font-size: 20px; font-weight: 900; color: #04281c;
-    background: linear-gradient(135deg, #7cffc4, #34d399);
-    cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.4);
-    transition: transform 0.1s;
+  @keyframes wrongShake {
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
   }
-  #overlay .cta:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
+  .answer.dim { opacity: 0.35; }
 
-  .float-text {
-    position: fixed; font-size: 26px; font-weight: 900; color: #ffe86b;
-    pointer-events: none; z-index: 60;
-    animation: floatUp 1s ease-out forwards;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  .float-points {
+    position: fixed;
+    font-size: 30px;
+    font-weight: 900;
+    color: #7cffc4;
+    pointer-events: none;
+    z-index: 100;
+    animation: floatUp 0.9s ease-out forwards;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
   @keyframes floatUp {
-    from { transform: translateY(0) scale(0.8); opacity: 1; }
-    to { transform: translateY(-100px) scale(1.2); opacity: 0; }
+    from { transform: translateY(0) scale(0.5); opacity: 0; }
+    20% { transform: translateY(-20px) scale(1.3); opacity: 1; }
+    to { transform: translateY(-120px) scale(1); opacity: 0; }
   }
 
-  /* Компактный HUD для landscape на телефоне */
-  @media (orientation: landscape) and (max-height: 500px) {
-    .stat { padding: 6px 10px; font-size: 12px; }
-    .money { font-size: 16px; }
-    .stat-label { font-size: 8px; }
-    .income, .time-badge { font-size: 11px; }
-    #joystick { width: 110px; height: 110px; }
-    #stick { width: 46px; height: 46px; margin: -23px 0 0 -23px; }
-    #interactBtn { min-width: 78px; height: 78px; font-size: 11px; }
-    #resetBtn { width: 32px; height: 32px; top: calc(env(safe-area-inset-top, 10px) + 58px); }
+  /* РЕЗУЛЬТАТ */
+  .result-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 20, 15, 0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    text-align: center;
+    z-index: 200;
+    backdrop-filter: blur(10px);
+  }
+  .result-overlay.active { display: flex; }
+  .r-emoji { font-size: 80px; animation: bounce 1s ease infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+  .r-title {
+    font-size: clamp(26px, 7vw, 38px);
+    font-weight: 900;
+    margin: 0;
+    background: linear-gradient(135deg, #7cffc4, #ffe86b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .r-score { font-size: 20px; color: #8fd4b8; font-weight: 700; }
+  .r-score b { color: #7cffc4; font-size: 28px; }
+  .r-stats { font-size: 14px; color: #8fd4b8; }
+  .btn-again {
+    margin-top: 12px;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #04281c;
+    background: linear-gradient(135deg, #7cffc4, #34d399);
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+  }
+  .btn-again:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3); }
+
+  #confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 199;
   }
 </style>
 </head>
 <body>
+  <div class="bg"></div>
+  <canvas id="confetti"></canvas>
 
-<div id="hud">
-  <div class="stat">
-    <span class="stat-label">Деньги</span>
-    <span class="money" id="moneyEl">$1 000 000</span>
+  <div class="app">
+    <div class="tabs">
+      <button class="tab active" data-topic="water">💧 Вода</button>
+      <button class="tab" data-topic="light">💡 Свет</button>
+      <button class="tab" data-topic="mix">🌍 Микс</button>
+    </div>
+
+    <div class="levels">
+      <button class="level easy active" data-level="easy">🟢 Легко</button>
+      <button class="level hard" data-level="hard">🔴 Сложно</button>
+    </div>
+
+    <div class="hud">
+      <div class="hud-pill">🎯 <span id="score">0</span></div>
+      <div class="hud-pill" id="progress">1/10</div>
+      <div class="hud-pill streak" id="streak">🔥 0</div>
+    </div>
+    <div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>
+
+    <div class="q-emoji" id="qEmoji">💧</div>
+    <div class="q-text" id="qText"></div>
+    <div class="answers" id="answers"></div>
   </div>
-  <div class="stat">
-    <span class="stat-label">Доход / время</span>
-    <span class="income" id="incomeEl"></span>
-    <span class="time-badge" id="timeEl">☀️ День</span>
+
+  <div class="result-overlay" id="resultOverlay">
+    <div class="r-emoji" id="rEmoji">🏆</div>
+    <h2 class="r-title" id="rTitle">Молодец!</h2>
+    <div class="r-score">Очки: <b id="rScore">0</b></div>
+    <div class="r-stats" id="rStats"></div>
+    <button class="btn-again" id="againBtn">Играть ещё</button>
   </div>
-</div>
 
-<button id="resetBtn" title="Сбросить">↻</button>
+<script>
+/* ===== ЗВУК ===== */
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function beep(freq, dur, type = 'sine', vol = 0.08) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  osc.type = type;
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  const t = audioCtx.currentTime;
+  gain.gain.setValueAtTime(vol, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  osc.start(t); osc.stop(t + dur);
+}
+const sfx = {
+  correct: () => { beep(880, 0.1); setTimeout(() => beep(1320, 0.15), 80); },
+  wrong: () => beep(180, 0.3, 'sawtooth'),
+  win: () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, 0.2), i * 100)); },
+  lose: () => { [400, 300, 200].forEach((f, i) => setTimeout(() => beep(f, 0.2, 'triangle'), i * 120)); }
+};
 
-<div id="joystick"><div id="stick"></div></div>
-<button id="interactBtn"><span id="interactLabel">Купить</span></button>
+/* ===== КОНФЕТТИ ===== */
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas() { canvas.width = innerWidth; canvas.height = innerHeight; }
+addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-<div id="toast"></div>
-
-<div id="orientation-hint">
-  <div class="ico">📱</div>
-  <p>Поверни телефон горизонтально — так удобнее играть</p>
-</div>
-
-<div id="overlay">
-  <h1>🌆 Мой город</h1>
-  <p>Ты — миллионер. Купи дом — и сможешь зайти внутрь. Купи бизнес — он приносит доход каждую секунду. Купи машину — и садись за руль. Монеты на дороге — бонус.</p>
-  <div class="legend-mobile">
-    <span>🕹️ Джойстик</span><b>Ходить / ехать</b>
-    <span>👆 Свайп</span><b>Обзор</b>
-    <span>🟡 Кнопка</span><b>Купить / войти / сесть</b>
-    <span>🪙 Монеты</span><b>+$500</b>
-  </div>
-  <button class="cta" id="startBtn">Играть</button>
-</div>
-
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+function spawnConfetti(count = 50) {
+  const colors = ['#7cffc4', '#4ad4ff', '#ffe86b', '#ff6b6b', '#c084fc', '#34d399'];
+  const cx = innerWidth / 2, cy = innerHeight / 2;
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 10;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 4,
+      size: 5 + Math.random() * 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.4, life: 1
+    });
   }
 }
-</script>
-
-<script type="module">
-import * as THREE from 'three';
-
-const START_MONEY = 1000000;
-const SAVE_KEY = 'cityGameSave_v3';
-
-/* ================== RENDERER ================== */
-const scene = new THREE.Scene();
-const interiorScene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 600);
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
-
-let currentScene = scene;
-
-/* ================== АДАПТАЦИЯ ПОД ОРИЕНТАЦИЮ ================== */
-function applyOrientation() {
-  camera.aspect = innerWidth / innerHeight;
-  // В портрете делаем угол шире, чтобы было видно больше
-  camera.fov = camera.aspect < 0.9 ? 85 : (camera.aspect < 1.3 ? 75 : 68);
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-
-  const portrait = innerHeight > innerWidth;
-  document.getElementById('orientation-hint').classList.toggle('show', portrait && state.running);
+function loopConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.vx *= 0.99; p.rot += p.vr; p.life -= 0.012;
+    if (p.life > 0) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    }
+  });
+  particles = particles.filter(p => p.life > 0 && p.y < canvas.height + 50);
+  requestAnimationFrame(loopConfetti);
 }
-addEventListener('resize', applyOrientation);
-addEventListener('orientationchange', () => setTimeout(applyOrientation, 100));
+loopConfetti();
 
-/* ================== СВЕТ ГОРОДА ================== */
-const ambient = new THREE.AmbientLight(0xffffff, 0.7);
-scene.add(ambient);
-
-const hemi = new THREE.HemisphereLight(0xb0d8f0, 0x6ab04c, 0.45);
-scene.add(hemi);
-
-const sun = new THREE.DirectionalLight(0xffffff, 1.0);
-sun.castShadow = true;
-sun.shadow.mapSize.set(1024, 1024);
-sun.shadow.camera.left = -55;
-sun.shadow.camera.right = 55;
-sun.shadow.camera.top = 55;
-sun.shadow.camera.bottom = -55;
-sun.shadow.camera.near = 0.5;
-sun.shadow.camera.far = 220;
-sun.shadow.bias = -0.0006;
-scene.add(sun);
-scene.add(sun.target);
-
-/* ================== НЕБО ================== */
-const skyUniforms = {
-  topColor: { value: new THREE.Color(0x3a7bd5) },
-  bottomColor: { value: new THREE.Color(0xb0d8f0) }
+/* ===== ВОПРОСЫ ===== */
+const QUESTIONS = {
+  water: {
+    easy: [
+      { q: 'Сколько воды в организме человека?', o: ['Около 30%', 'Около 45%', 'Около 65%', 'Около 90%'], c: 2 },
+      { q: 'Что экономит воду при чистке зубов?', o: ['Оставлять кран открытым', 'Закрывать кран, пока чистишь', 'Набирать полную раковину', 'Чистить под сильной струёй'], c: 1 },
+      { q: 'Какая вода замерзает быстрее?', o: ['Холодная', 'Горячая', 'Одинаково', 'Зависит от посуды'], c: 1 },
+      { q: 'Сколько пресной воды на Земле?', o: ['Около 30%', 'Около 10%', 'Меньше 1%', 'Около 50%'], c: 2 },
+      { q: 'Что тратит меньше воды?', o: ['Полная ванна', 'Короткий душ', 'Два душа', 'Две ванны'], c: 1 },
+      { q: 'Когда лучше поливать растения?', o: ['В полдень', 'Утром или вечером', 'В жару', 'Во время дождя'], c: 1 },
+      { q: 'Как мыть посуду экономнее?', o: ['Держать кран открытым', 'Закрывать кран между ополаскиваниями', 'Мыть только горячей водой', 'Мыть по одной тарелке'], c: 1 },
+      { q: 'Из крана капает. Что делать?', o: ['Подставить стакан', 'Починить или заменить прокладку', 'Открыть кран сильнее', 'Ничего'], c: 1 },
+      { q: 'Как мыть овощи экономнее?', o: ['Под непрерывной струёй', 'В миске с водой', 'В горячей воде', 'Не мыть'], c: 1 },
+      { q: 'Сколько литров тратит человек в день в быту?', o: ['Около 20 л', 'Около 70 л', '150–200 л', 'Около 500 л'], c: 2 }
+    ],
+    hard: [
+      { q: 'Сколько воды нужно на 1 кг пшеницы?', o: ['Около 100 л', 'Около 400 л', 'Около 1500 л', 'Около 5000 л'], c: 2 },
+      { q: 'Эффект Мпембы — это...', o: ['Горячая вода замерзает быстрее холодной', 'Холодная вода замерзает быстрее', 'Вода не замерзает при 0°C', 'Лёд тает быстрее воды'], c: 0 },
+      { q: 'Сколько воды в мозге человека?', o: ['Около 40%', 'Около 60%', 'Около 75%', 'Около 95%'], c: 2 },
+      { q: 'Сколько воды уходит на одну футболку?', o: ['Около 100 л', 'Около 500 л', 'Около 2700 л', 'Около 10000 л'], c: 2 },
+      { q: '«Виртуальная вода» — это...', o: ['Вода из виртуального крана', 'Вода, скрытая в производстве вещей', 'Вода в компьютерных играх', 'Дистиллированная вода'], c: 1 },
+      { q: 'Сколько воды теряет капающий кран за сутки?', o: ['До 5 л', 'До 10 л', 'До 20 л', 'До 100 л'], c: 2 },
+      { q: 'Сколько литров в одном кубометре воды?', o: ['100 л', '500 л', '1000 л', '10000 л'], c: 2 },
+      { q: 'Где на Земле больше всего пресной воды?', o: ['В реках', 'В ледниках', 'В озёрах', 'В атмосфере'], c: 1 },
+      { q: 'Какое море самое солёное?', o: ['Чёрное', 'Красное', 'Мёртвое', 'Средиземное'], c: 2 },
+      { q: 'Сколько воды нужно на 1 кг говядины?', o: ['Около 1500 л', 'Около 5000 л', 'Около 15000 л', 'Около 50000 л'], c: 2 }
+    ]
+  },
+  light: {
+    easy: [
+      { q: 'Какая лампа экономичнее?', o: ['Накаливания', 'LED-лампа', 'Галогенная', 'Лампа с нитью'], c: 1 },
+      { q: 'Выходишь из комнаты. Что делать со светом?', o: ['Оставить включённым', 'Выключить', 'Сделать ярче', 'Включить ещё лампу'], c: 1 },
+      { q: '«Режим ожидания» техники — это...', o: ['Работа на полной мощности', 'Полное выключение', 'Скрытое потребление энергии', 'Зарядка'], c: 2 },
+      { q: 'Как кипятить воду в чайнике экономнее?', o: ['Наливать до максимума', 'Кипятить столько, сколько нужно', 'Кипятить несколько раз', 'Не закрывать крышку'], c: 1 },
+      { q: 'Где нельзя ставить холодильник?', o: ['В прохладном углу', 'Рядом с плитой', 'Подальше от окна', 'В тени'], c: 1 },
+      { q: 'Как меньше включать свет днём?', o: ['Задёрнуть шторы', 'Открыть шторы и использовать дневной свет', 'Включить все лампы', 'Закрыть окна'], c: 1 },
+      { q: 'Класс энергоэффективности «A+++» — это...', o: ['Высокий расход энергии', 'Самый экономный класс', 'Техника без энергии', 'Только для ламп'], c: 1 },
+      { q: 'Когда лучше отключать телефон от зарядки?', o: ['Утром', 'После полной зарядки', 'При 5%', 'Не отключать'], c: 1 },
+      { q: 'Зарядка без телефона в розетке...', o: ['Не тратит энергию', 'Тратит немного энергии', 'Тратит много энергии', 'Опасна'], c: 1 },
+      { q: 'Самый экологичный источник света днём?', o: ['Лампы', 'Окно (дневной свет)', 'Гирлянда', 'Фонарик'], c: 1 }
+    ],
+    hard: [
+      { q: 'Сколько свет летит от Солнца до Земли?', o: ['Около 1 секунды', 'Около 8 минут', 'Около 1 часа', 'Около 1 суток'], c: 1 },
+      { q: 'Кто изобрёл лампочку накаливания?', o: ['Только Эдисон', 'Более 20 изобретателей', 'Ломоносов', 'Изобретена в XXI веке'], c: 1 },
+      { q: 'Сколько света «съедает» пыль на лампе?', o: ['Нисколько', 'До 20%', 'До 50%', 'До 80%'], c: 1 },
+      { q: 'LED-лампа служит дольше обычной в...', o: ['2 раза', '5 раз', '10–25 раз', 'Не дольше'], c: 2 },
+      { q: 'Какого цвета обычно бывает молния?', o: ['Только жёлтая', 'Только белая', 'Разной: белой, голубой, розовой', 'Только синяя'], c: 2 },
+      { q: 'Что такое люмен?', o: ['Единица светового потока', 'Единица энергии', 'Единица мощности', 'Единица напряжения'], c: 0 },
+      { q: 'Что экономичнее: выключить свет на 5 минут или оставить?', o: ['Оставить включённым', 'Выключить', 'Одинаково', 'Зависит от лампы'], c: 1 },
+      { q: 'Какая лампа сильнее всего нагревается?', o: ['LED', 'Накаливания', 'Люминесцентная', 'Галогенная'], c: 1 },
+      { q: 'Ватт — это единица...', o: ['Светового потока', 'Мощности', 'Напряжения', 'Силы тока'], c: 1 },
+      { q: 'Сколько энергии тратит зарядка без телефона за год?', o: ['Нисколько', 'Около 1 кВт·ч', 'Около 50 кВт·ч', 'Около 500 кВт·ч'], c: 1 }
+    ]
+  },
+  mix: {
+    easy: [
+      { q: 'Что разлагается быстрее?', o: ['Пластиковый пакет', 'Банановая кожура', 'Стеклянная бутылка', 'Алюминиевая банка'], c: 1 },
+      { q: 'Куда правильно сдавать батарейки?', o: ['В обычный мусор', 'В пункт приёма опасных отходов', 'В раковину', 'На клумбу'], c: 1 },
+      { q: 'Что экологичнее для покупок?', o: ['Новый пластиковый пакет', 'Многоразовая сумка', 'Двойной пластиковый пакет', 'Бумажный пакет каждый раз'], c: 1 },
+      { q: 'Что означает значок ♻️?', o: ['Товар бракованный', 'Товар можно переработать', 'Товар дорогой', 'Товар запрещён'], c: 1 },
+      { q: 'Куда деть ненужную вещь?', o: ['Выбросить', 'Отдать, продать или сдать на переработку', 'Спрятать в шкаф', 'Сжечь'], c: 1 },
+      { q: 'Стоит ли выключать воду при намыливании?', o: ['Нет, это неудобно', 'Да, экономия в разы', 'Иногда', 'Неважно'], c: 1 },
+      { q: 'Двусторонняя печать — это...', o: ['Плохо для принтера', 'Экономия бумаги', 'Дорого', 'Медленно'], c: 1 },
+      { q: 'Сколько мусора в год производит один человек?', o: ['Около 20 кг', 'Около 100 кг', 'Около 400 кг', 'Около 5 тонн'], c: 2 },
+      { q: 'Можно ли перерабатывать стекло?', o: ['Только 1 раз', 'Только 5 раз', 'Бесконечно', 'Нельзя'], c: 2 },
+      { q: 'Что делать с использованной лампой?', o: ['В обычный мусор', 'В спецпункт приёма', 'Разбить и выбросить', 'Закопать'], c: 1 }
+    ],
+    hard: [
+      { q: 'Сколько лет разлагается пластиковая бутылка?', o: ['Около 10 лет', 'Около 50 лет', 'Около 450 лет', 'Около 1000 лет'], c: 2 },
+      { q: 'Сколько земли загрязняет одна батарейка?', o: ['Около 1 м²', 'Около 5 м²', 'Около 20 м²', 'Около 100 м²'], c: 2 },
+      { q: 'Что можно сделать из 25 пластиковых бутылок?', o: ['Ничего полезного', 'Одну футболку', 'Игрушку', 'Тарелку'], c: 1 },
+      { q: 'Какой пластик перерабатывается чаще всего?', o: ['PET (бутылки)', 'PVC', 'PS (пенопласт)', 'PLA'], c: 0 },
+      { q: '«Углеродный след» — это...', o: ['След от обуви', 'Количество CO₂ от деятельности', 'След от машины', 'Вес мусора'], c: 1 },
+      { q: 'Сколько энергии экономит переработка алюминиевой банки?', o: ['Около 10%', 'Около 50%', 'Около 95%', 'Около 100%'], c: 2 },
+      { q: 'Что означает маркировка FSC на бумаге?', o: ['Брак', 'Древесина из ответственных источников', 'Дорогой товар', 'Синтетическая бумага'], c: 1 },
+      { q: 'Компостирование — это...', o: ['Сжигание отходов', 'Переработка органики в удобрение', 'Закапывание мусора', 'Сортировка пластика'], c: 1 },
+      { q: 'Сколько нефти нужно на одну пластиковую бутылку?', o: ['Не нужна', 'Около 10 мл', 'Около 100 мл', 'Около 1 л'], c: 1 },
+      { q: 'Что такое «zero waste»?', o: ['Полный отказ от покупок', 'Стремление к нулевым отходам', 'Новый вид переработки', 'Завод без выбросов'], c: 1 }
+    ]
+  }
 };
-const skyMat = new THREE.ShaderMaterial({
-  uniforms: skyUniforms,
-  vertexShader: `
-    varying vec3 vWorld;
-    void main() {
-      vec4 wp = modelMatrix * vec4(position, 1.0);
-      vWorld = wp.xyz;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 topColor;
-    uniform vec3 bottomColor;
-    varying vec3 vWorld;
-    void main() {
-      float h = normalize(vWorld).y;
-      float t = clamp(h, 0.0, 1.0);
-      gl_FragColor = vec4(mix(bottomColor, topColor, t), 1.0);
-    }
-  `,
-  side: THREE.BackSide,
-  depthWrite: false
-});
-const sky = new THREE.Mesh(new THREE.SphereGeometry(450, 24, 12), skyMat);
-scene.add(sky);
 
-/* ================== ЗЕМЛЯ И ДОРОГИ ================== */
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(220, 220),
-  new THREE.MeshLambertMaterial({ color: 0x5ea64c })
-);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
+const TOPIC_EMOJI = {
+  water: ['💧', '🚿', '🌊', '🚰', '🧊', '🌧️'],
+  light: ['💡', '⚡', '🔋', '☀️', '🔌', '🌙'],
+  mix: ['🌿', '♻️', '🌍', '🍀', '🌱', '🌞']
+};
 
-const roadMat = new THREE.MeshLambertMaterial({ color: 0x2f2f2f });
-const stripeMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-const sidewalkMat = new THREE.MeshLambertMaterial({ color: 0xb5b5b5 });
-const curbMat = new THREE.MeshLambertMaterial({ color: 0x888888 });
+/* ===== ИГРА ===== */
+const TOTAL = 10;
+const TIME_PER_Q = 15000;
 
-function addRoad(w, h, x, z) {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, h), roadMat);
-  r.rotation.x = -Math.PI / 2;
-  r.position.set(x, 0.02, z);
-  r.receiveShadow = true;
-  scene.add(r);
-}
-addRoad(220, 12, 0, 0);
-addRoad(12, 220, 0, 0);
+const state = {
+  topic: 'water',
+  level: 'easy',
+  questions: [],
+  index: 0,
+  score: 0,
+  streak: 0,
+  bestStreak: 0,
+  correct: 0,
+  timerId: null,
+  locked: false
+};
 
-function addSidewalk(w, h, x, z) {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sidewalkMat);
-  r.rotation.x = -Math.PI / 2;
-  r.position.set(x, 0.015, z);
-  r.receiveShadow = true;
-  scene.add(r);
-}
-addSidewalk(220, 2.5, 0, 7.75);
-addSidewalk(220, 2.5, 0, -7.75);
-addSidewalk(2.5, 220, 7.75, 0);
-addSidewalk(2.5, 220, -7.75, 0);
+const $ = id => document.getElementById(id);
 
-// Бордюры
-function addCurb(w, h, x, z) {
-  const c = new THREE.Mesh(new THREE.BoxGeometry(w, 0.3, h), curbMat);
-  c.position.set(x, 0.15, z);
-  c.receiveShadow = true;
-  c.castShadow = true;
-  scene.add(c);
-}
-addCurb(220, 0.3, 0, 6.6);
-addCurb(220, 0.3, 0, -6.6);
-addCurb(0.3, 220, 6.6, 0);
-addCurb(0.3, 220, -6.6, 0);
-
-for (let x = -105; x <= 105; x += 8) {
-  if (Math.abs(x) < 6) continue;
-  const s = new THREE.Mesh(new THREE.PlaneGeometry(4, 0.4), stripeMat);
-  s.rotation.x = -Math.PI / 2;
-  s.position.set(x, 0.03, 0);
-  scene.add(s);
-}
-for (let z = -105; z <= 105; z += 8) {
-  if (Math.abs(z) < 6) continue;
-  const s = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 4), stripeMat);
-  s.rotation.x = -Math.PI / 2;
-  s.position.set(0, 0.03, z);
-  scene.add(s);
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
-/* ================== ТЕКСТ НА ВЫВЕСКАХ ================== */
-function makeSignTexture(text, bg = '#1a1a2a', fg = '#ffe86b') {
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 128;
-  const cx = c.getContext('2d');
-  cx.fillStyle = bg;
-  cx.fillRect(0, 0, c.width, c.height);
-  cx.strokeStyle = fg;
-  cx.lineWidth = 6;
-  cx.strokeRect(4, 4, c.width - 8, c.height - 8);
-  cx.fillStyle = fg;
-  cx.font = 'bold 72px system-ui, Arial';
-  cx.textAlign = 'center';
-  cx.textBaseline = 'middle';
-  cx.fillText(text, c.width / 2, c.height / 2);
-  const tex = new THREE.CanvasTexture(c);
-  tex.anisotropy = 4;
-  return tex;
+function startGame() {
+  initAudio();
+  const pool = QUESTIONS[state.topic][state.level];
+  state.questions = shuffle(pool).slice(0, Math.min(TOTAL, pool.length));
+  state.index = 0;
+  state.score = 0;
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.correct = 0;
+  $('score').textContent = '0';
+  $('streak').textContent = '🔥 0';
+  $('resultOverlay').classList.remove('active');
+  nextQuestion();
 }
 
-/* ================== ЗДАНИЯ ================== */
-const buildings = [];
+function nextQuestion() {
+  clearInterval(state.timerId);
+  state.locked = false;
 
-function createHouse(x, z, opts) {
-  const { color, price, name } = opts;
-  const g = new THREE.Group();
+  if (state.index >= state.questions.length) {
+    endGame();
+    return;
+  }
 
-  // Основа
-  const base = new THREE.Mesh(
-    new THREE.BoxGeometry(8, 6, 8),
-    new THREE.MeshLambertMaterial({ color })
-  );
-  base.position.y = 3;
-  base.castShadow = true;
-  base.receiveShadow = true;
-  g.add(base);
+  const q = state.questions[state.index];
+  $('progress').textContent = `${state.index + 1}/${state.questions.length}`;
 
-  // Крыша
-  const roof = new THREE.Mesh(
-    new THREE.ConeGeometry(6.5, 3, 4),
-    new THREE.MeshLambertMaterial({ color: 0x8b4513 })
-  );
-  roof.position.y = 7.5;
-  roof.rotation.y = Math.PI / 4;
-  roof.castShadow = true;
-  g.add(roof);
+  const emojis = TOPIC_EMOJI[state.topic];
+  $('qEmoji').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  $('qText').textContent = q.q;
 
-  // Труба
-  const chimney = new THREE.Mesh(
-    new THREE.BoxGeometry(0.9, 2, 0.9),
-    new THREE.MeshLambertMaterial({ color: 0x6b4423 })
-  );
-  chimney.position.set(2, 7.8, -1);
-  chimney.castShadow = true;
-  g.add(chimney);
-
-  // Дверь + рама
-  const doorFrame = new THREE.Mesh(
-    new THREE.BoxGeometry(1.8, 2.8, 0.15),
-    new THREE.MeshLambertMaterial({ color: 0x3a2410 })
-  );
-  doorFrame.position.set(0, 1.4, 4.06);
-  g.add(doorFrame);
-  const door = new THREE.Mesh(
-    new THREE.BoxGeometry(1.4, 2.4, 0.1),
-    new THREE.MeshLambertMaterial({ color: 0x8b5a2b })
-  );
-  door.position.set(0, 1.2, 4.1);
-  g.add(door);
-  // Ручка
-  const knob = new THREE.Mesh(
-    new THREE.SphereGeometry(0.09, 8, 6),
-    new THREE.MeshBasicMaterial({ color: 0xffdd44 })
-  );
-  knob.position.set(0.55, 1.2, 4.16);
-  g.add(knob);
-
-  // Окна с рамами
-  const winMat = new THREE.MeshLambertMaterial({ color: 0x88c8f8, emissive: 0x224466 });
-  const frameMat = new THREE.MeshLambertMaterial({ color: 0x3a2410 });
-  [-2.5, 2.5].forEach(dx => {
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.8, 0.1), frameMat);
-    frame.position.set(dx, 4, 4.06);
-    g.add(frame);
-    const w = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.5, 0.12), winMat);
-    w.position.set(dx, 4, 4.1);
-    g.add(w);
-    // Переплёт
-    const cross = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.5, 0.14), frameMat);
-    cross.position.set(dx, 4, 4.11);
-    g.add(cross);
+  const answersEl = $('answers');
+  answersEl.innerHTML = '';
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.textContent = opt;
+    btn.onclick = () => pickAnswer(i);
+    answersEl.appendChild(btn);
   });
 
-  // Крыльцо
-  const porch = new THREE.Mesh(
-    new THREE.BoxGeometry(3, 0.3, 1.5),
-    new THREE.MeshLambertMaterial({ color: 0xaaaaaa })
-  );
-  porch.position.set(0, 0.15, 4.8);
-  porch.receiveShadow = true;
-  g.add(porch);
-
-  g.position.set(x, 0, z);
-  g.userData = { type: 'house', price, name, owned: false, w: 8, d: 8, h: 6, income: 0 };
-  scene.add(g);
-  buildings.push(g);
+  const bar = $('timerBar');
+  bar.style.width = '100%';
+  bar.className = 'timer-bar';
+  const startedAt = Date.now();
+  state.timerId = setInterval(() => {
+    const elapsed = Date.now() - startedAt;
+    const percent = Math.max(0, 100 - (elapsed / TIME_PER_Q) * 100);
+    bar.style.width = percent + '%';
+    if (percent < 50 && percent > 20) { bar.classList.add('warn'); bar.classList.remove('danger'); }
+    if (percent <= 20) { bar.classList.add('danger'); bar.classList.remove('warn'); }
+    if (percent <= 0) { clearInterval(state.timerId); timeUp(); }
+  }, 50);
 }
 
-function createBusiness(x, z, opts) {
-  const { color, price, income, name, w = 10, h = 12, d = 10, signText, signBg = '#1a1a2a', signFg = '#ffe86b' } = opts;
-  const g = new THREE.Group();
+function pickAnswer(idx) {
+  if (state.locked) return;
+  state.locked = true;
+  clearInterval(state.timerId);
+  const q = state.questions[state.index];
+  const buttons = $('answers').querySelectorAll('.answer');
+  const isCorrect = idx === q.c;
 
-  // Каркас
-  const base = new THREE.Mesh(
-    new THREE.BoxGeometry(w, h, d),
-    new THREE.MeshLambertMaterial({ color })
-  );
-  base.position.y = h / 2;
-  base.castShadow = true;
-  base.receiveShadow = true;
-  g.add(base);
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.c) btn.classList.add('correct');
+    else if (i === idx && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('dim');
+  });
 
-  // Цоколь (тёмная полоса внизу)
-  const plinth = new THREE.Mesh(
-    new THREE.BoxGeometry(w + 0.2, 1, d + 0.2),
-    new THREE.MeshLambertMaterial({ color: 0x222222 })
-  );
-  plinth.position.y = 0
+  if (isCorrect) handleCorrect(buttons[idx]);
+  else handleWrong();
+
+  setTimeout(() => { state.index++; nextQuestion(); }, isCorrect ? 900 : 1400);
+}
+
+function timeUp() {
+  if (state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.index];
+  const buttons = $('answers').querySelectorAll('.answer');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.c) btn.classList.add('correct');
+    else btn.classList.add('dim');
+  });
+  handleWrong();
+  setTimeout(() => { state.index++; nextQuestion(); }, 1400);
+}
+
+function handleCorrect(btn) {
+  sfx.correct();
+  spawnConfetti(40);
+  state.streak++;
+  state.correct++;
+  if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  const base = 10;
+  const bonus = state.streak >= 3 ? (state.streak - 2) * 5 : 0;
+  const points = base + bonus;
+  state.score += points;
+  $('score').textContent = state.score;
+  $('streak').textContent = `🔥 ${state.streak}`;
+  if (bonus > 0) {
+    $('streak').classList.add('hot');
+    setTimeout(() => $('streak').classList.remove('hot'), 300);
+  }
+  const rect = btn.getBoundingClientRect();
+  const fp = document.createElement('div');
+  fp.className = 'float-points';
+  fp.textContent = '+' + points;
+  fp.style.left = rect.left + rect.width / 2 - 30 + 'px';
+  fp.style.top = rect.top + 'px';
+  document.body.appendChild(fp);
+  setTimeout(() => fp.remove(), 900);
+}
+
+function handleWrong() {
+  sfx.wrong();
+  state.streak = 0;
+  $('streak').textContent = '🔥 0';
+}
+
+function endGame() {
+  const percent = state.correct / state.questions.length;
+  let emoji, title;
+  if (percent === 1) { emoji = '🏆'; title = 'Идеально!'; }
+  else if (percent >= 0.7) { emoji = '🌟'; title = 'Супер!'; }
+  else if (percent >= 0.4) { emoji = '👍'; title = 'Неплохо!'; }
+  else { emoji = '💪'; title = 'Тренируйся!'; }
+
+  $('rEmoji').textContent = emoji;
+  $('rTitle').textContent = title;
+  $('rScore').textContent = state.score;
+  $('rStats').textContent = `Правильно: ${state.correct} из ${state.questions.length} • Лучшая серия: ${state.bestStreak}`;
+
+  if (percent >= 0.7) { spawnConfetti(150); sfx.win(); }
+  else sfx.lose();
+
+  $('resultOverlay').classList.add('active');
+}
+
+/* ===== ОБРАБОТЧИКИ ===== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.topic = tab.dataset.topic;
+    startGame();
+  });
+});
+
+document.querySelectorAll('.level').forEach(lvl => {
+  lvl.addEventListener('click', () => {
+    document.querySelectorAll('.level').forEach(l => l.classList.remove('active'));
+    lvl.classList.add('active');
+    state.level = lvl.dataset.level;
+    startGame();
+  });
+});
+
+$('againBtn').onclick = () => startGame();
+
+startGame();
+</script>
+</body>
+</html>
