@@ -1,455 +1,718 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Эко-квест: экономим воду и свет</title>
-  <style>
-    * { box-sizing: border-box; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Эко-квест: вода и свет</title>
+<style>
+  * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #e8f7ff 0%, #eafff1 100%);
-      color: #1b2b24;
-      min-height: 100vh;
-      padding: 24px 16px;
-    }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #e8f7ff 0%, #eafff1 100%);
+    color: #1b2b24;
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+  }
 
-    .app {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+  .app { max-width: 860px; margin: 0 auto; }
 
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+  header { text-align: center; margin-bottom: 22px; }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(23px, 4vw, 34px);
+    color: #0f5c46;
+  }
+  header p { margin: 0; color: #45685c; }
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: clamp(24px, 4vw, 36px);
-      color: #0f5c46;
-    }
+  /* Табы */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    header p {
-      margin: 0;
-      color: #45685c;
-    }
+  .tab {
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 1px solid #cde8dc;
+    background: #fff;
+    color: #23574a;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .tab:hover { background: #f1fff9; }
+  .tab.active {
+    background: #0f8a61;
+    border-color: #0f8a61;
+    color: #fff;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.25fr 1fr;
-      gap: 18px;
-    }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .2s ease; }
 
-    @media (max-width: 760px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
 
-    .card {
-      background: #fff;
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(20, 80, 60, 0.09);
-      border: 1px solid #d9f0e6;
-    }
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(20, 80, 60, .09);
+    border: 1px solid #d9f0e6;
+  }
 
-    .card h2 {
-      margin-top: 0;
-      color: #0f5c46;
-      font-size: 20px;
-    }
+  .card h2 {
+    margin: 0 0 6px;
+    color: #0f5c46;
+    font-size: 20px;
+  }
 
-    .progress-text {
-      font-size: 14px;
-      color: #5c7a70;
-      margin-bottom: 12px;
-    }
+  .quiz-progress {
+    font-size: 14px;
+    color: #5c7a70;
+    margin-bottom: 14px;
+  }
 
-    .question {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.35;
-      margin-bottom: 14px;
-    }
+  .question {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
 
-    .answers {
-      display: grid;
-      gap: 10px;
-    }
+  .answers { display: grid; gap: 10px; }
 
-    .answers button {
-      width: 100%;
-      text-align: left;
-      padding: 12px 14px;
-      border: 1px solid #cde8dc;
-      border-radius: 12px;
-      background: #f7fffb;
-      color: #1b2b24;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.15s;
-    }
+  .answers button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid #cde8dc;
+    border-radius: 12px;
+    background: #f7fffb;
+    color: #1b2b24;
+    font-size: 15px;
+    line-height: 1.35;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .answers button:hover:not(:disabled) {
+    background: #e9fff4;
+    border-color: #7ccfaa;
+  }
+  .answers button:disabled { cursor: default; opacity: .95; }
+  .answers button.correct {
+    background: #d6ffe8;
+    border-color: #34b878;
+    font-weight: 700;
+  }
+  .answers button.wrong {
+    background: #ffe2e2;
+    border-color: #e05b5b;
+    font-weight: 700;
+  }
 
-    .answers button:hover:not(:disabled) {
-      background: #e9fff4;
-      border-color: #7ccfaa;
-    }
+  .feedback {
+    min-height: 40px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    display: none;
+  }
+  .feedback.ok { display: block; background: #e5fff1; color: #0d6b42; }
+  .feedback.bad { display: block; background: #fff0f0; color: #a12c2c; }
 
-    .answers button:disabled {
-      cursor: default;
-      opacity: 0.95;
-    }
+  .btn {
+    margin-top: 14px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    background: #0f8a61;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .btn:hover:not(:disabled) { background: #0b6f4e; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
 
-    .answers button.correct {
-      background: #d6ffe8;
-      border-color: #34b878;
-      font-weight: 700;
-    }
+  .btn.ghost {
+    background: #fff;
+    color: #0f5c46;
+    border: 1px solid #b9ddcf;
+  }
+  .btn.ghost:hover { background: #f1fff9; }
 
-    .answers button.wrong {
-      background: #ffe2e2;
-      border-color: #e05b5b;
-      font-weight: 700;
-    }
+  /* Квест */
+  .quest-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
 
-    .feedback {
-      min-height: 42px;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      line-height: 1.4;
-      display: none;
-    }
+  .quest-step { font-size: 14px; color: #5c7a70; }
 
-    .feedback.ok {
-      display: block;
-      background: #e5fff1;
-      color: #0d6b42;
-    }
+  .quest-points {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f5c46;
+    background: #e5fff1;
+    padding: 6px 12px;
+    border-radius: 99px;
+  }
 
-    .feedback.bad {
-      display: block;
-      background: #fff0f0;
-      color: #a12c2c;
-    }
+  .scene {
+    font-size: 15px;
+    color: #45685c;
+    margin-bottom: 6px;
+  }
 
-    button.primary {
-      margin-top: 14px;
-      padding: 12px 18px;
-      border: none;
-      border-radius: 12px;
-      background: #0f8a61;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.15s;
-    }
+  .situation {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
 
-    button.primary:hover:not(:disabled) {
-      background: #0b6f4e;
-    }
+  .choices { display: grid; gap: 10px; }
 
-    button.primary:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
+  .choice {
+    width: 100%;
+    text-align: left;
+    padding: 13px 14px;
+    border: 1px solid #cde8dc;
+    border-radius: 12px;
+    background: #f7fffb;
+    color: #1b2b24;
+    font-size: 15px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .choice:hover:not(:disabled) {
+    background: #e9fff4;
+    border-color: #7ccfaa;
+  }
+  .choice:disabled { cursor: default; }
+  .choice.best {
+    background: #d6ffe8;
+    border-color: #34b878;
+    font-weight: 700;
+  }
+  .choice.okay {
+    background: #fff9dd;
+    border-color: #e0c14e;
+  }
+  .choice.bad {
+    background: #ffe2e2;
+    border-color: #e05b5b;
+  }
 
-    .quest-list {
-      display: grid;
-      gap: 10px;
-      margin: 12px 0 16px;
-    }
+  .bar {
+    height: 10px;
+    border-radius: 99px;
+    background: #e4f2ec;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .bar > div {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #34b878, #0f8a61);
+    transition: width .35s;
+  }
 
-    .quest-list label {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      padding: 11px 12px;
-      border-radius: 12px;
-      background: #f8fffb;
-      border: 1px solid #d9f0e6;
-      cursor: pointer;
-      font-size: 15px;
-      line-height: 1.35;
-    }
+  .result-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f5c46;
+    margin: 0 0 8px;
+  }
 
-    .quest-list input {
-      margin-top: 3px;
-      width: 18px;
-      height: 18px;
-      accent-color: #0f8a61;
-      flex: 0 0 auto;
-    }
-
-    .bar {
-      height: 12px;
-      border-radius: 99px;
-      background: #e4f2ec;
-      overflow: hidden;
-    }
-
-    .bar > div {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #34b878, #0f8a61);
-      transition: width 0.3s;
-    }
-
-    .tips ul {
-      margin: 10px 0 0;
-      padding-left: 20px;
-      line-height: 1.6;
-      color: #33584b;
-    }
-
-    .reset {
-      display: block;
-      margin: 20px auto 0;
-      padding: 11px 18px;
-      border-radius: 12px;
-      border: 1px solid #b9ddcf;
-      background: #fff;
-      color: #0f5c46;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .reset:hover {
-      background: #f1fff9;
-    }
-  </style>
+  .result-text { color: #33584b; line-height: 1.55; margin: 0 0 4px; }
+</style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>🌿 Эко-квест: экономим воду и свет</h1>
-      <p>Проверьте знания в викторине и выполните полезные квесты на день.</p>
-    </header>
+<div class="app">
+  <header>
+    <h1>🌿 Эко-квест: вода и свет</h1>
+    <p>Две викторины и одна миссия — проверь, насколько ты экономный.</p>
+  </header>
 
-    <div class="grid">
-      <section class="card">
-        <h2>Викторина</h2>
-        <div class="progress-text" id="quizProgress"></div>
-        <div class="question" id="question"></div>
-        <div class="answers" id="answers"></div>
-        <div class="feedback" id="feedback"></div>
-        <button class="primary" id="nextBtn" disabled>Следующий вопрос</button>
-      </section>
-
-      <section class="card">
-        <h2>Квесты на день</h2>
-        <p class="progress-text" id="questProgress">Выполнено 0 из 0</p>
-        <div class="quest-list">
-          <label><input type="checkbox" data-quest /> Закрыть кран, пока чищу зубы</label>
-          <label><input type="checkbox" data-quest /> Принять короткий душ вместо ванны</label>
-          <label><input type="checkbox" data-quest /> Выключить свет в пустой комнате</label>
-          <label><input type="checkbox" data-quest /> Загрузить стиральную машину полностью</label>
-          <label><input type="checkbox" data-quest /> Проверить, нет ли протекающих кранов</label>
-          <label><input type="checkbox" data-quest /> Выключить приборы из режима ожидания</label>
-        </div>
-        <div class="bar"><div id="questBar"></div></div>
-      </section>
-    </div>
-
-    <section class="card tips" style="margin-top: 18px;">
-      <h2>Простые правила экономии</h2>
-      <ul>
-        <li>Закрывайте кран при чистке зубов и мытье посуды — это экономит десятки литров воды.</li>
-        <li>Короткий душ расходует меньше воды, чем полная ванна.</li>
-        <li>Выключайте свет и технику, когда они не нужны.</li>
-        <li>Используйте LED-лампы: они потребляют меньше электроэнергии.</li>
-        <li>Стирайте и мойте посуду при полной загрузке техники.</li>
-      </ul>
-    </section>
-
-    <button class="reset" id="resetBtn">Начать заново</button>
+  <div class="tabs">
+    <button class="tab active" data-tab="water">💧 Викторина: вода</button>
+    <button class="tab" data-tab="light">💡 Викторина: свет</button>
+    <button class="tab" data-tab="quest">🎮 Квест: эко-миссия</button>
   </div>
 
-  <script>
-    const questions = [
-      {
-        q: "Как лучше экономить воду при чистке зубов?",
-        options: [
-          "Оставлять кран открытым",
-          "Закрывать кран, пока чистишь",
-          "Набирать полную раковину",
-          "Мыть руки под горячей водой"
-        ],
-        correct: 1,
-        explain: "Закрытый кран экономит до 10–15 литров воды за пару минут."
-      },
-      {
-        q: "Какая лампа обычно экономичнее?",
-        options: ["Лампа накаливания", "LED-лампа", "Галогенная лампа", "Неоновая лампа"],
-        correct: 1,
-        explain: "LED-лампы потребляют меньше электроэнергии и служат дольше."
-      },
-      {
-        q: "Что поможет сэкономить электроэнергию при стирке?",
-        options: [
-          "Стирать по одной вещи",
-          "Стирать при высокой температуре всегда",
-          "Загружать машину полностью",
-          "Оставлять машину включённой"
-        ],
-        correct: 2,
-        explain: "Полная загрузка стиральной машины снижает число лишних циклов стирки."
-      },
-      {
-        q: "Что лучше сделать со светом, выходя из комнаты?",
-        options: ["Оставить включённым", "Выключить", "Сделать ярче", "Открыть окно"],
-        correct: 1,
-        explain: "Выключение света в пустой комнате — простой способ экономить электричество."
-      },
-      {
-        q: "Что экономит воду при мытье посуды?",
-        options: [
-          "Держать кран открытым всё время",
-          "Мыть под сильной струёй",
-          "Закрывать кран между ополаскиваниями",
-          "Использовать только горячую воду"
-        ],
-        correct: 2,
-        explain: "Если закрывать кран между этапами мытья, расход воды заметно снижается."
-      },
-      {
-        q: "Почему протекающий кран — это плохо?",
-        options: [
-          "Он делает воду вкуснее",
-          "Он тратит воду впустую",
-          "Он экономит электричество",
-          "Он очищает трубы"
-        ],
-        correct: 1,
-        explain: "Даже небольшая течь за день может потратить много литров воды."
-      },
-      {
-        q: "Как разумнее кипятить воду в чайнике?",
-        options: [
-          "Наливать до максимума",
-          "Кипятить столько, сколько нужно",
-          "Кипятить несколько раз",
-          "Не закрывать крышку"
-        ],
-        correct: 1,
-        explain: "Если кипятить только нужное количество воды, расход электричества меньше."
-      }
-    ];
+  <!-- ВИКТОРИНА: ВОДА -->
+  <section class="panel active" id="panel-water">
+    <div class="card" id="quiz-water">
+      <h2>💧 Викторина про воду</h2>
+      <div class="quiz-progress"></div>
+      <div class="question"></div>
+      <div class="answers"></div>
+      <div class="feedback"></div>
+      <button class="btn next-btn" disabled>Следующий вопрос</button>
+      <button class="btn ghost restart-btn" hidden>Пройти заново</button>
+    </div>
+  </section>
 
-    const questionEl = document.getElementById("question");
-    const answersEl = document.getElementById("answers");
-    const feedbackEl = document.getElementById("feedback");
-    const nextBtn = document.getElementById("nextBtn");
-    const progressEl = document.getElementById("quizProgress");
+  <!-- ВИКТОРИНА: СВЕТ -->
+  <section class="panel" id="panel-light">
+    <div class="card" id="quiz-light">
+      <h2>💡 Викторина про свет и электричество</h2>
+      <div class="quiz-progress"></div>
+      <div class="question"></div>
+      <div class="answers"></div>
+      <div class="feedback"></div>
+      <button class="btn next-btn" disabled>Следующий вопрос</button>
+      <button class="btn ghost restart-btn" hidden>Пройти заново</button>
+    </div>
+  </section>
 
-    const questBoxes = document.querySelectorAll("[data-quest]");
-    const questProgressEl = document.getElementById("questProgress");
-    const questBar = document.getElementById("questBar");
-    const resetBtn = document.getElementById("resetBtn");
+  <!-- КВЕСТ -->
+  <section class="panel" id="panel-quest">
+    <div class="card" id="quest">
+      <h2>🎮 Миссия «Один эко-день»</h2>
+      <div class="bar"><div class="quest-bar-fill"></div></div>
+      <div class="quest-head" style="margin-top:14px;">
+        <div class="quest-step"></div>
+        <div class="quest-points">0 эко-очков</div>
+      </div>
+      <div class="scene"></div>
+      <div class="situation"></div>
+      <div class="choices"></div>
+      <div class="feedback"></div>
+      <button class="btn quest-next" hidden>Дальше</button>
+      <button class="btn ghost quest-restart" hidden>Пройти миссию заново</button>
+    </div>
+  </section>
+</div>
 
-    let current = 0;
-    let score = 0;
-    let answered = false;
+<script>
+/* ============ ОБЩИЙ ДВИЖОК ВИКТОРИНЫ ============ */
+function createQuiz(rootId, questions) {
+  const root = document.getElementById(rootId);
+  const progressEl = root.querySelector('.quiz-progress');
+  const questionEl = root.querySelector('.question');
+  const answersEl = root.querySelector('.answers');
+  const feedbackEl = root.querySelector('.feedback');
+  const nextBtn = root.querySelector('.next-btn');
+  const restartBtn = root.querySelector('.restart-btn');
 
-    function renderQuestion() {
-      answered = false;
-      nextBtn.hidden = false;
-      nextBtn.disabled = true;
-      feedbackEl.className = "feedback";
-      feedbackEl.textContent = "";
+  let current = 0;
+  let score = 0;
+  let answered = false;
 
-      if (current >= questions.length) {
-        showResult();
-        return;
-      }
+  function reset() {
+    current = 0;
+    score = 0;
+    answered = false;
+    restartBtn.hidden = true;
+    nextBtn.hidden = false;
+    nextBtn.disabled = true;
+    nextBtn.textContent = 'Следующий вопрос';
+    render();
+  }
 
-      const item = questions[current];
-      progressEl.textContent = `Вопрос ${current + 1} из ${questions.length}`;
-      questionEl.textContent = item.q;
-      answersEl.innerHTML = "";
+  function render() {
+    answered = false;
+    feedbackEl.className = 'feedback';
+    feedbackEl.textContent = '';
 
-      item.options.forEach((option, index) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = option;
-        btn.addEventListener("click", () => selectAnswer(index, btn));
-        answersEl.appendChild(btn);
-      });
+    if (current >= questions.length) {
+      showResult();
+      return;
     }
 
-    function selectAnswer(index, clickedBtn) {
-      if (answered) return;
-      answered = true;
+    const item = questions[current];
+    progressEl.textContent = `Вопрос ${current + 1} из ${questions.length}`;
+    questionEl.textContent = item.q;
+    answersEl.innerHTML = '';
 
-      const item = questions[current];
-      const buttons = answersEl.querySelectorAll("button");
-
-      buttons.forEach((btn, i) => {
-        btn.disabled = true;
-        if (i === item.correct) btn.classList.add("correct");
-      });
-
-      if (index === item.correct) {
-        score++;
-        feedbackEl.textContent = "Верно! " + item.explain;
-        feedbackEl.className = "feedback ok";
-      } else {
-        clickedBtn.classList.add("wrong");
-        feedbackEl.textContent = "Не совсем. " + item.explain;
-        feedbackEl.className = "feedback bad";
-      }
-
-      nextBtn.disabled = false;
-    }
-
-    function showResult() {
-      progressEl.textContent = "Викторина завершена";
-      questionEl.textContent = `Ваш результат: ${score} из ${questions.length}`;
-      answersEl.innerHTML = "";
-
-      if (score === questions.length) {
-        feedbackEl.textContent = "Отлично! Вы настоящий эко-герой 🌱";
-      } else if (score >= Math.ceil(questions.length / 2)) {
-        feedbackEl.textContent = "Хорошо! Вы уже много знаете об экономии ресурсов.";
-      } else {
-        feedbackEl.textContent = "Есть куда расти. Прочитайте советы ниже и попробуйте снова.";
-      }
-
-      feedbackEl.className = "feedback ok";
-      nextBtn.hidden = true;
-    }
-
-    nextBtn.addEventListener("click", () => {
-      current++;
-      renderQuestion();
+    item.options.forEach((option, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = option;
+      btn.addEventListener('click', () => choose(i, btn));
+      answersEl.appendChild(btn);
     });
 
-    function updateQuests() {
-      const total = questBoxes.length;
-      const done = [...questBoxes].filter((box) => box.checked).length;
+    nextBtn.disabled = true;
+  }
 
-      questProgressEl.textContent = `Выполнено ${done} из ${total}`;
-      questBar.style.width = total ? `${(done / total) * 100}%` : "0%";
+  function choose(index, clicked) {
+    if (answered) return;
+    answered = true;
+
+    const item = questions[current];
+    const buttons = answersEl.querySelectorAll('button');
+
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === item.correct) btn.classList.add('correct');
+    });
+
+    if (index === item.correct) {
+      score++;
+      feedbackEl.textContent = 'Верно! ' + item.explain;
+      feedbackEl.className = 'feedback ok';
+    } else {
+      clicked.classList.add('wrong');
+      feedbackEl.textContent = 'Не совсем. ' + item.explain;
+      feedbackEl.className = 'feedback bad';
     }
 
-    questBoxes.forEach((box) => {
-      box.addEventListener("change", updateQuests);
-    });
+    nextBtn.disabled = false;
+  }
 
-    resetBtn.addEventListener("click", () => {
-      current = 0;
-      score = 0;
-      questBoxes.forEach((box) => { box.checked = false; });
-      updateQuests();
-      renderQuestion();
-    });
+  function showResult() {
+    progressEl.textContent = 'Викторина завершена';
+    answersEl.innerHTML = '';
+    questionEl.textContent = `Результат: ${score} из ${questions.length}`;
 
-    updateQuests();
-    renderQuestion();
-  </script>
+    if (score === questions.length) {
+      feedbackEl.textContent = 'Отлично! Ты настоящий эко-герой 🌱';
+    } else if (score >= Math.ceil(questions.length / 2)) {
+      feedbackEl.textContent = 'Хорошо! Большая часть правил уже знакома.';
+    } else {
+      feedbackEl.textContent = 'Есть куда расти — попробуй ещё раз и запомни подсказки.';
+    }
+    feedbackEl.className = 'feedback ok';
+
+    nextBtn.hidden = true;
+    restartBtn.hidden = false;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    current++;
+    render();
+  });
+
+  restartBtn.addEventListener('click', reset);
+
+  reset();
+}
+
+/* ============ ВОПРОСЫ ============ */
+createQuiz('quiz-water', [
+  {
+    q: 'Как лучше экономить воду при чистке зубов?',
+    options: [
+      'Оставлять кран открытым',
+      'Закрывать кран, пока чистишь',
+      'Набирать полную раковину',
+      'Чистить зубы под сильной струёй'
+    ],
+    correct: 1,
+    explain: 'Закрытый кран экономит до 10–15 литров воды за пару минут.'
+  },
+  {
+    q: 'Что расходует меньше воды?',
+    options: [
+      'Полная ванна',
+      'Короткий душ 5 минут',
+      'Долгий душ 20 минут',
+      'Две полные ванны'
+    ],
+    correct: 1,
+    explain: 'Короткий душ обычно тратит в 2–3 раза меньше воды, чем ванна.'
+  },
+  {
+    q: 'Почему протекающий кран — это проблема?',
+    options: [
+      'Он делает воду вкуснее',
+      'Он очищает трубы',
+      'Он тратит воду впустую каждый день',
+      'Он экономит электричество'
+    ],
+    correct: 2,
+    explain: 'Даже небольшая течь за сутки может «унести» десятки литров.'
+  },
+  {
+    q: 'Как разумнее мыть посуду руками?',
+    options: [
+      'Держать кран открытым всё время',
+      'Закрывать кран между ополаскиваниями',
+      'Мыть только горячей водой под напором',
+      'Мыть каждую тарелку отдельно'
+    ],
+    correct: 1,
+    explain: 'Закрывая кран между этапами, ты сокращаешь расход воды в разы.'
+  },
+  {
+    q: 'Когда лучше поливать растения, чтобы вода меньше испарялась?',
+    options: [
+      'В полдень под палящим солнцем',
+      'Утром или вечером',
+      'В обед, когда жарко',
+      'Во время дождя'
+    ],
+    correct: 1,
+    explain: 'Утром и вечером вода не испаряется так быстро и доходит до корней.'
+  }
+]);
+
+createQuiz('quiz-light', [
+  {
+    q: 'Какая лампа обычно экономичнее?',
+    options: ['Лампа накаливания', 'LED-лампа', 'Галогенная лампа', 'Лампа с нитью накала'],
+    correct: 1,
+    explain: 'LED-лампы потребляют меньше энергии и служат дольше.'
+  },
+  {
+    q: 'Ты выходишь из комнаты. Что сделать со светом?',
+    options: ['Оставить включённым', 'Выключить', 'Сделать ярче', 'Включить ещё одну лампу'],
+    correct: 1,
+    explain: 'Выключенный свет в пустой комнате — самый простой способ экономии.'
+  },
+  {
+    q: 'Что такое «режим ожидания» у техники?',
+    options: [
+      'Техника работает на полной мощности',
+      'Техника выключена полностью',
+      'Техника вроде выключена, но продолжает тратить энергию',
+      'Техника заряжается'
+    ],
+    correct: 2,
+    explain: 'В режиме ожидания приборы продолжают потреблять электричество. Лучше вынимать вилку.'
+  },
+  {
+    q: 'Как разумнее кипятить воду в чайнике?',
+    options: [
+      'Наливать до максимума',
+      'Кипятить столько, сколько нужно',
+      'Кипятить воду несколько раз',
+      'Не закрывать крышку'
+    ],
+    correct: 1,
+    explain: 'Чем меньше лишней воды — тем меньше электричества уходит на нагрев.'
+  },
+  {
+    q: 'Куда лучше не ставить холодильник?',
+    options: [
+      'В прохладный угол',
+      'Рядом с плитой или батареей',
+      'Подальше от окна',
+      'В тень'
+    ],
+    correct: 1,
+    explain: 'Рядом с источником тепла холодильник тратит больше энергии на охлаждение.'
+  },
+  {
+    q: 'Как днём можно меньше включать свет?',
+    options: [
+      'Задёрнуть шторы',
+      'Использовать дневной свет из окна',
+      'Включить все лампы',
+      'Закрыть окна'
+    ],
+    correct: 1,
+    explain: 'Дневной свет бесплатный — открытые шторы помогают экономить электричество.'
+  }
+]);
+
+/* ============ КВЕСТ ============ */
+const questSteps = [
+  {
+    scene: '🪥 Утро, ванная комната',
+    situation: 'Ты чистишь зубы. Кран рядом. Что делаешь?',
+    choices: [
+      { text: 'Закрываю кран, пока чищу', points: 10, type: 'best', feedback: '+10 очков. Отличный старт — экономия до 15 литров.' },
+      { text: 'Набираю воду в стакан для полоскания', points: 7, type: 'okay', feedback: '+7 очков. Хорошо, но кран всё равно лучше закрыть.' },
+      { text: 'Оставляю кран открытым — так быстрее', points: 0, type: 'bad', feedback: '0 очков. Вода льётся впустую всё время чистки.' }
+    ]
+  },
+  {
+    scene: '🚿 После зарядки',
+    situation: 'Пора в душ. Какой вариант выбираешь?',
+    choices: [
+      { text: 'Короткий душ 5 минут', points: 10, type: 'best', feedback: '+10 очков. Быстро, бодро и экономно.' },
+      { text: 'Долгий душ 20 минут', points: 0, type: 'bad', feedback: '0 очков. Долгий душ тратит очень много воды.' },
+      { text: 'Полная ванна', points: 0, type: 'bad', feedback: '0 очков. Ванна — самый затратный вариант.' }
+    ]
+  },
+  {
+    scene: '🍽 Кухня, после завтрака',
+    situation: 'В раковине гора посуды. Как моешь?',
+    choices: [
+      { text: 'Закрываю кран между ополаскиваниями', points: 10, type: 'best', feedback: '+10 очков. Так расход воды заметно меньше.' },
+      { text: 'Мою под непрерывной струёй', points: 0, type: 'bad', feedback: '0 очков. Постоянная струя — большая потеря воды.' },
+      { text: 'Замачиваю посуду и мою при закрытом кране', points: 8, type: 'okay', feedback: '+8 очков. Хороший приём, вода уходит меньше.' }
+    ]
+  },
+  {
+    scene: '🚪 Выходишь из комнаты',
+    situation: 'Ты уходишь на кухню на полчаса. Свет в комнате…',
+    choices: [
+      { text: 'Выключаю — комната пустая', points: 10, type: 'best', feedback: '+10 очков. Простое действие, реальная экономия.' },
+      { text: 'Оставляю включённым, вдруг вернусь', points: 0, type: 'bad', feedback: '0 очков. Свет в пустой комнате — чистая потеря.' },
+      { text: 'Выключаю и открываю шторы для дневного света', points: 10, type: 'best', feedback: '+10 очков. Идеально: и светло, и экономично.' }
+    ]
+  },
+  {
+    scene: '🔌 Вечер, техника',
+    situation: 'Телефон заряжен, ноутбук выключен, зарядки в розетках. Что делаешь?',
+    choices: [
+      { text: 'Вынимаю зарядки из розеток', points: 10, type: 'best', feedback: '+10 очков. Режим ожидания тоже тратит энергию.' },
+      { text: 'Оставляю всё как есть до утра', points: 0, type: 'bad', feedback: '0 очков. Мелкие потери за ночь складываются в заметные.' },
+      { text: 'Выключаю только ноутбук', points: 5, type: 'okay', feedback: '+5 очков. Частично хорошо, но зарядки тоже стоит убрать.' }
+    ]
+  },
+  {
+    scene: '🍵 Хочется чая',
+    situation: 'Нужна одна чашка. Как кипятишь воду?',
+    choices: [
+      { text: 'Наливаю ровно на чашку', points: 10, type: 'best', feedback: '+10 очков. Кипятишь только нужное — меньше энергии.' },
+      { text: 'Наливаю полный чайник на всякий случай', points: 0, type: 'bad', feedback: '0 очков. Лишняя вода = лишнее электричество.' },
+      { text: 'Наливаю с запасом на две чашки', points: 4, type: 'okay', feedback: '+4 очка. Неплохо, но ровно на чашку экономнее.' }
+    ]
+  }
+];
+
+function initQuest() {
+  const root = document.getElementById('quest');
+  const stepEl = root.querySelector('.quest-step');
+  const pointsEl = root.querySelector('.quest-points');
+  const sceneEl = root.querySelector('.scene');
+  const situationEl = root.querySelector('.situation');
+  const choicesEl = root.querySelector('.choices');
+  const feedbackEl = root.querySelector('.feedback');
+  const nextBtn = root.querySelector('.quest-next');
+  const restartBtn = root.querySelector('.quest-restart');
+  const barFill = root.querySelector('.quest-bar-fill');
+
+  const maxPoints = questSteps.reduce(
+    (sum, step) => sum + Math.max(...step.choices.map(c => c.points)), 0
+  );
+
+  let index = 0;
+  let points = 0;
+  let answered = false;
+
+  function updateBar() {
+    barFill.style.width = (index / questSteps.length) * 100 + '%';
+  }
+
+  function renderStep() {
+    answered = false;
+    feedbackEl.className = 'feedback';
+    feedbackEl.textContent = '';
+    nextBtn.hidden = true;
+    restartBtn.hidden = true;
+    choicesEl.innerHTML = '';
+    updateBar();
+
+    if (index >= questSteps.length) {
+      showResult();
+      return;
+    }
+
+    const step = questSteps[index];
+    stepEl.textContent = `Ситуация ${index + 1} из ${questSteps.length}`;
+    pointsEl.textContent = `${points} эко-очков`;
+    sceneEl.textContent = step.scene;
+    situationEl.textContent = step.situation;
+
+    step.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'choice';
+      btn.textContent = choice.text;
+      btn.addEventListener('click', () => pick(choice, btn));
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function pick(choice, clicked) {
+    if (answered) return;
+    answered = true;
+
+    points += choice.points;
+    pointsEl.textContent = `${points} эко-очков`;
+
+    choicesEl.querySelectorAll('.choice').forEach(btn => btn.disabled = true);
+    clicked.classList.add(choice.type);
+
+    feedbackEl.textContent = choice.feedback;
+    feedbackEl.className = 'feedback ' + (choice.points >= 8 ? 'ok' : 'bad');
+
+    nextBtn.hidden = false;
+    nextBtn.textContent = index === questSteps.length - 1 ? 'Показать итог' : 'Дальше';
+  }
+
+  function showResult() {
+    updateBar();
+    barFill.style.width = '100%';
+    stepEl.textContent = 'Миссия завершена';
+    sceneEl.textContent = '';
+    choicesEl.innerHTML = '';
+
+    const percent = Math.round((points / maxPoints) * 100);
+
+    let title, text;
+    if (percent >= 90) {
+      title = '🏆 Эко-герой!';
+      text = 'Ты экономишь воду и свет почти идеально. Так держать!';
+    } else if (percent >= 65) {
+      title = '🌿 Хороший эко-результат';
+      text = 'Много верных решений. Осталось подтянуть пару привычек.';
+    } else if (percent >= 40) {
+      title = '🙂 Неплохо, но есть рост';
+      text = 'Часть решений тратит ресурсы зря. Попробуй пройти миссию ещё раз.';
+    } else {
+      title = '💧 Стоит потренироваться';
+      text = 'Много воды и энергии уходит впустую. Пройди миссию заново — станет лучше.';
+    }
+
+    situationEl.innerHTML =
+      `<div class="result-title">${title}</div>` +
+      `<p class="result-text">${points} из ${maxPoints} эко-очков (${percent}%)</p>` +
+      `<p class="result-text">${text}</p>`;
+
+    restartBtn.hidden = false;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    index++;
+    renderStep();
+  });
+
+  restartBtn.addEventListener('click', () => {
+    index = 0;
+    points = 0;
+    situationEl.textContent = '';
+    renderStep();
+  });
+
+  renderStep();
+}
+
+initQuest();
+
+/* ============ ТАБЫ ============ */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
